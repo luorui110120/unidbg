@@ -27,6 +27,8 @@ import com.github.unidbg.linux.android.dvm.array.ByteArray;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.utils.Inspector;
 import com.sun.jna.Pointer;
+import king.trace.GlobalData;
+import king.trace.KingTrace;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +57,21 @@ public class TTEncrypt {
         module = dm.getModule(); // 加载好的libttEncrypt.so对应为一个模块
 
         TTEncryptUtils = vm.resolveClass("com/bytedance/frameworks/core/encrypt/TTEncryptUtils");
+
+        //过滤掉下面模块的计算时间
+        GlobalData.ignoreModuleList.add("libc.so");
+        GlobalData.ignoreModuleList.add("libc++.so");
+        GlobalData.ignoreModuleList.add("libhookzz.so");
+        GlobalData.ignoreModuleList.add("libxhook.so");
+        ////监控内存 开始地址 和  结束地址;打印输出, 这个是内存地址
+        //GlobalData.watch_address.put(0x401db840, 0);
+        GlobalData.is_dump_ldr=true;
+        GlobalData.is_dump_str=true;
+        KingTrace trace=new KingTrace(emulator);
+        //// 设置监控的其实地址和结束地址, 这些都是内存地址 ea, 所以要加上基地址   module.base
+        trace.initialize(1,0,null);
+
+        emulator.getBackend().hook_add_new(trace,1,0,emulator);
     }
 
     void destroy() throws IOException {
