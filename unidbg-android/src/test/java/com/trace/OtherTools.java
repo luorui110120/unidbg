@@ -1,4 +1,4 @@
-package king.trace;
+package com.trace;
 
 public class OtherTools {
     public static String byteToString(byte[] b) {

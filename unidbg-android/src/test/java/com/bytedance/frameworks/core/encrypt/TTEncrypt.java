@@ -27,8 +27,8 @@ import com.github.unidbg.linux.android.dvm.array.ByteArray;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.utils.Inspector;
 import com.sun.jna.Pointer;
-import king.trace.GlobalData;
-import king.trace.KingTrace;
+import com.trace.GlobalData;
+import com.trace.KingTrace;
 
 import java.io.File;
 import java.io.IOException;

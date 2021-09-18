@@ -1,4 +1,4 @@
-package king.trace;
+package com.trace;
 
 import capstone.Capstone;
 import com.github.unidbg.Emulator;
@@ -28,15 +28,15 @@ public class KingTrace implements CodeHook {
         super();
         this.emulator = emulator;
         if(this.emulator.is64Bit()){
-            reg_names=GlobalData.arm64_reg_names;
+            reg_names= GlobalData.arm64_reg_names;
         }else{
-            reg_names=GlobalData.arm_reg_names;
+            reg_names= GlobalData.arm_reg_names;
         }
         MemTrace memtrace=new MemTrace(false);
         //将所有监控的内存监控地址都trace下
-        for(Integer key:GlobalData.watch_address.keySet()){
+        for(Integer key: GlobalData.watch_address.keySet()){
             long start=key;
-            long end=GlobalData.watch_address.get(key);
+            long end= GlobalData.watch_address.get(key);
             emulator.getBackend().hook_add_new((WriteHook) memtrace,start,end,emulator);
         }
     }
@@ -149,8 +149,8 @@ public class KingTrace implements CodeHook {
 
             }
             try{
-                long unsignedValue=OtherTools.toUnsignedLong(right);
-                byte[] dump_buff= backend.mem_read(unsignedValue,GlobalData.dump_str_size);
+                long unsignedValue= OtherTools.toUnsignedLong(right);
+                byte[] dump_buff= backend.mem_read(unsignedValue, GlobalData.dump_str_size);
                 Inspector.inspect(dump_buff, String.format("ldr_right_address:%x dump",unsignedValue));
             }catch(Exception ex){
 
@@ -165,9 +165,9 @@ public class KingTrace implements CodeHook {
                 Integer regindex = reg_names.get(GlobalData.pre_regname.toUpperCase());
                 Number regvalue = backend.reg_read(regindex);
                 if(emulator.is32Bit() || GlobalData.pre_regname.toUpperCase().startsWith("W")){
-                    GlobalData.pre_codestr+=String.format("\t//%s=0x%x" , GlobalData.pre_regname,OtherTools.toUnsignedInt(regvalue.intValue()));
+                    GlobalData.pre_codestr+=String.format("\t//%s=0x%x" , GlobalData.pre_regname, OtherTools.toUnsignedInt(regvalue.intValue()));
                 }else{
-                    GlobalData.pre_codestr+=String.format("\t//%s=0x%x" , GlobalData.pre_regname,OtherTools.toUnsignedLong(regvalue.longValue()));
+                    GlobalData.pre_codestr+=String.format("\t//%s=0x%x" , GlobalData.pre_regname, OtherTools.toUnsignedLong(regvalue.longValue()));
                 }
 
                 printMsg(GlobalData.pre_codestr);
@@ -176,7 +176,7 @@ public class KingTrace implements CodeHook {
                     if(GlobalData.pre_codestr.contains(" str") ){
                         if(regvalue.longValue()>0xffff){
                             try{
-                                byte[] dump_buff= backend.mem_read(regvalue.longValue(),GlobalData.dump_str_size);
+                                byte[] dump_buff= backend.mem_read(regvalue.longValue(), GlobalData.dump_str_size);
                                 Inspector.inspect(dump_buff, String.format("str_address:%x dump",regvalue.longValue()));
                             }catch(Exception ex){
 
@@ -191,7 +191,7 @@ public class KingTrace implements CodeHook {
                         //先尝试把ldr的结果当成指针去尝试读取
                         if(regvalue.longValue()>0xffff){
                             try{
-                                byte[] dump_buff= backend.mem_read(regvalue.longValue(),GlobalData.dump_str_size);
+                                byte[] dump_buff= backend.mem_read(regvalue.longValue(), GlobalData.dump_str_size);
                                 Inspector.inspect(dump_buff, String.format("ldr_left_address:%x dump",regvalue.longValue()));
                             }catch(Exception ex){
 
@@ -268,9 +268,9 @@ public class KingTrace implements CodeHook {
                 Integer regindex=reg_names.get(reg.toUpperCase());
                 Number regvalue=backend.reg_read(regindex);
                 if(emulator.is32Bit()||reg.toUpperCase().startsWith("W")){
-                    curRegs+=String.format("%s=0x%x\t" , reg,OtherTools.toUnsignedInt(regvalue.intValue()));
+                    curRegs+=String.format("%s=0x%x\t" , reg, OtherTools.toUnsignedInt(regvalue.intValue()));
                 }else{
-                    curRegs+=String.format("%s=0x%x\t" , reg,OtherTools.toUnsignedLong(regvalue.longValue()));
+                    curRegs+=String.format("%s=0x%x\t" , reg, OtherTools.toUnsignedLong(regvalue.longValue()));
                 }
             }
 //            if(opstr.contains(" ldr")){
@@ -280,7 +280,7 @@ public class KingTrace implements CodeHook {
 
 
 
-            GlobalData.pre_codestr=opstr +GlobalData.print_split+ curRegs;
+            GlobalData.pre_codestr=opstr + GlobalData.print_split+ curRegs;
             GlobalData.has_pre=true;
             address += ins.size;
         }

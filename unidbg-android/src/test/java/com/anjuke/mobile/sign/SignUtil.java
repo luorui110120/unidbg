@@ -11,8 +11,8 @@ import com.github.unidbg.linux.android.dvm.VM;
 import com.github.unidbg.linux.android.dvm.jni.ProxyClassFactory;
 import com.github.unidbg.linux.android.dvm.jni.ProxyDvmObject;
 import com.github.unidbg.memory.Memory;
-import king.trace.GlobalData;
-import king.trace.KingTrace;
+import com.trace.GlobalData;
+import com.trace.KingTrace;
 
 import java.io.File;
 import java.io.IOException;

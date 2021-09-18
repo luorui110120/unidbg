@@ -1,4 +1,4 @@
-package king.trace;
+package com.trace;
 
 
 import com.github.unidbg.Emulator;
@@ -82,7 +82,7 @@ public class MemTrace implements ReadHook, WriteHook {
             Emulator<?> emulator = (Emulator<?>) user;
             if (traceWriteListener == null || traceWriteListener.onWrite(emulator, address, size, value)) {
                 printMsg("### Memory WRITE at 0x", emulator, address, size, "0x" + Long.toHexString(value));
-                byte[] idata= backend.mem_read(address,GlobalData.watch_print_size);
+                byte[] idata= backend.mem_read(address, GlobalData.watch_print_size);
                 Inspector.inspect(idata, String.format("watch_address:%x onchange",address));
             }
         } catch (BackendException e) {
