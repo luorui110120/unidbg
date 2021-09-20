@@ -125,7 +125,7 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
                 if (log.isDebugEnabled()) {
                     log.debug("processCommand value=0x" + Long.toHexString(value) + ", b=" + b);
                 }
-                sendAck((byte) 0x5);
+                sendAck(new byte[]{1,(byte) 0x5});
                 break;
             }
             case 0xb: {
