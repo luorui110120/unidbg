@@ -33,6 +33,12 @@ public class ProxyDvmObject extends DvmObject<Object> {
         if (value == null) {
             return null;
         }
+        if (value instanceof Class<?>) {
+            return getObjectType(vm, (Class<?>) value);
+        }
+        if (value instanceof DvmObject) {
+            return (DvmObject<?>) value;
+        }
 
         if (value instanceof byte[]) {
             return new ByteArray(vm, (byte[]) value);
