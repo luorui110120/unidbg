@@ -25,406 +25,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="492b9d3a-1938-4b0f-ac59-619de44a58e5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/DynarmicBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/DynarmicBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/Dynarmic.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/Dynarmic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/DynarmicBackend32.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/DynarmicBackend32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/DynarmicBackend64.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/DynarmicBackend64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/EventMemHookNotifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/java/com/github/unidbg/arm/backend/dynarmic/EventMemHookNotifier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/arm_dynarmic_cp15.h" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/arm_dynarmic_cp15.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/com_github_unidbg_arm_backend_dynarmic_Dynarmic.h" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/com_github_unidbg_arm_backend_dynarmic_Dynarmic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/dynarmic.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/dynarmic.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/dynarmic.h" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/dynarmic.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/osx_build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/native/dynarmic/osx_build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/linux_64/libdynarmic.so" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/linux_64/libdynarmic.so" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/osx_64/libdynarmic.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/osx_64/libdynarmic.dylib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/windows_64/dynarmic.dll" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dynarmic/src/main/resources/natives/windows_64/dynarmic.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/assets/ldid" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/assets/ldid" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/HypervisorBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/HypervisorBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/HypervisorFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/HypervisorFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/Hypervisor.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/Hypervisor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/HypervisorBackend64.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/HypervisorBackend64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/HypervisorCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/java/com/github/unidbg/arm/backend/hypervisor/HypervisorCallback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/com_github_unidbg_arm_backend_hypervisor_Hypervisor.h" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/com_github_unidbg_arm_backend_hypervisor_Hypervisor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/hypervisor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/hypervisor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/hypervisor.h" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/native/hypervisor/hypervisor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/hypervisor/src/main/resources/natives/osx_arm64/libhypervisor.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/backend/hypervisor/src/main/resources/natives/osx_arm64/libhypervisor.dylib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kvm/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kvm/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/KvmBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/KvmBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/kvm/KvmBackend32.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/kvm/KvmBackend32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/kvm/KvmBackend64.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kvm/src/main/java/com/github/unidbg/arm/backend/kvm/KvmBackend64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/kvm/src/main/native/kvm.c" beforeDir="false" afterPath="$PROJECT_DIR$/backend/kvm/src/main/native/kvm.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/file/linux/AndroidFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/file/linux/AndroidFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/ARM32SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/ARM32SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/ARM64SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/ARM64SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AbsoluteInitFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AbsoluteInitFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AndroidElfLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AndroidElfLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AndroidSyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/AndroidSyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxInitFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxInitFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/LinuxThread.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidARMEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidARMEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidARMUnwinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidARMUnwinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/AndroidResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ArmLD.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ArmLD.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ArmLD64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ArmLD64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ElfLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ElfLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ElfLibraryRawFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/ElfLibraryRawFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/SystemPropertyHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/SystemPropertyHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/URLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/URLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/XHookImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/XHookImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/AbstractJni.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/AbstractJni.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/ApkLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/ApkLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/ArmVarArg64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/ArmVarArg64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/BaseVM.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/BaseVM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikVM.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikVM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikVM64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DalvikVM64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmField.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmField.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/DvmObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/JValueList.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/JValueList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/Jni.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/Jni.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/JniFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/JniFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/VM.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/VM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/api/SystemService.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/api/SystemService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/Apk.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/Apk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/ApkDir.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/ApkDir.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/ApkFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/apk/ApkFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyJni.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyJni.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyMethod.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/android/dvm/jni/ProxyUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Ashmem.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Ashmem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/ByteArrayFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/ByteArrayFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/LocalSocketIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/LocalSocketIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/SimpleFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/SimpleFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/SocketIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/SocketIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Stdin.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Stdin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Stdout.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/Stdout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/UdpSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/UdpSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/ZeroFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/file/ZeroFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/struct/IFConf.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/struct/IFConf.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/struct/Stat32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/struct/Stat32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/struct/dl_phdr_info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/thread/ThreadJoin19.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/thread/ThreadJoin19.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/thread/ThreadJoin23.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/com/github/unidbg/linux/thread/ThreadJoin23.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ArmExIdx.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ArmExIdx.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfDynamicStructure.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfDynamicStructure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfSection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/main/java/net/fornwall/jelf/ElfSegment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/anjuke/mobile/sign/SignUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/anjuke/mobile/sign/SignUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/bytedance/frameworks/core/encrypt/TTEncrypt.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/bytedance/frameworks/core/encrypt/TTEncrypt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/bytedance/frameworks/core/encrypt/TTEncryptWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/bytedance/frameworks/core/encrypt/TTEncryptWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/PropertiesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/PropertiesTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/Android64Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/Android64Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/AndroidTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/AndroidTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/RunExecutable.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/RunExecutable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/AndroidServer64Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/AndroidServer64Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/AndroidServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/AndroidServerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/MyARM64SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/MyARM64SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/MyARMSyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/ida/MyARMSyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/struct/File32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/struct/File32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/struct/File64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/github/unidbg/android/struct/File64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sankuai/meituan/BaseNative.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sankuai/meituan/BaseNative.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sankuai/meituan/Nativeimpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sankuai/meituan/Nativeimpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sun/jna/JniDispatch32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sun/jna/JniDispatch32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sun/jna/JniDispatch64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/sun/jna/JniDispatch64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/trace/KingTrace.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/trace/KingTrace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/com/trace/MemTrace.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/com/trace/MemTrace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/java/org/aeonlucid/AndroidNativeEmuTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/java/org/aeonlucid/AndroidNativeEmuTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/arm64-v8a/libnative.so" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/arm64-v8a/libnative.so" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/arm64-v8a/test" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/arm64-v8a/test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/armeabi-v7a/libnative.so" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/armeabi-v7a/libnative.so" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/armeabi-v7a/test" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/libs/armeabi-v7a/test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/native.c" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/native.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/native/android/test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/native/android/test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/resources/example_binaries/ida/android_server64_7.4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/resources/example_binaries/ida/android_server_7.4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-android/src/test/resources/log4j.properties" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-android/src/test/resources/log4j.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/AbstractEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/AbstractEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/AssemblyCodeDumper.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/AssemblyCodeDumper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Emulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Emulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/LibraryResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/LibraryResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/PointerNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/PointerNumber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Svc.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Svc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Symbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/Symbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/TraceMemoryHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/TraceMemoryHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARM.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARMEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARMEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARMSvcMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ARMSvcMemory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARM64Emulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARM64Emulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARMDebugger.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARMDebugger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARMEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/AbstractARMEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Arm64Hook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Arm64Hook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Arm64Svc.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Arm64Svc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ArmHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ArmHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ArmIntercept.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ArmSvc.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ArmSvc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/CodeHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/CodeHistory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Cpsr.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/Cpsr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/InlineHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/InlineHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/SimpleARM64Debugger.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/SimpleARM64Debugger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/SimpleARMDebugger.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/SimpleARMDebugger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ThumbIntercept.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ThumbSvc.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/ThumbSvc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/AbstractBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/AbstractBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/Backend.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/Backend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/BackendException.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/BackendException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/BackendFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/BackendFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/Detachable.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/Detachable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/EventMemHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/EventMemHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/FastBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/FastBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/InterruptHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/InterruptHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/UnicornBackend.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/arm/backend/UnicornBackend.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/AbstractDebugServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/AbstractDebugServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/DebugServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/DebugServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/Debugger.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/Debugger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/DebuggerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/DebuggerType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/ida/AndroidServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/ida/AndroidServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/ida/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/debugger/ida/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/AbstractFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/AbstractFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/BaseFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/BaseFileSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/FileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/file/FileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/BaseHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/BaseHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/HookListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/HookListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/Dobby.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/Dobby.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/HookZz.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/HookZz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/IHookZz.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/hookzz/IHookZz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/whale/IWhale.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/whale/IWhale.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/whale/Whale.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/hook/whale/Whale.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/listener/TraceCodeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/listener/TraceCodeListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/MemRegion.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/MemRegion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/Memory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/MemoryAllocBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/memory/MemoryAllocBlock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/pointer/UnidbgPointer.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/pointer/UnidbgPointer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/pointer/UnidbgStructure.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/pointer/UnidbgStructure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/AbstractLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/AbstractLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/Disassembler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/InitFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/InitFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/LibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/LibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/Loader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/Loader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/spi/SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/FileListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/FileListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/Thread.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/UnixEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/UnixEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/UnixSyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/UnixSyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/DlInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/StdString64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/TimeSpec.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/TimeSpec.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/TimeSpec64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unix/struct/TimeSpec64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/SimpleARM64Unwinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/SimpleARM64Unwinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/SimpleARMUnwinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/SimpleARMUnwinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/Unwinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/unwind/Unwinder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/utils/JarURL.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/utils/JarURL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/utils/ResourceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/utils/ResourceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/virtualmodule/VirtualSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/virtualmodule/VirtualSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/DefaultWorkerPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/DefaultWorkerPool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/Worker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/WorkerFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/java/com/github/unidbg/worker/WorkerFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/main/resources/cc.c" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/main/resources/cc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-api/src/test/java/com/github/unidbg/HexTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-api/src/test/java/com/github/unidbg/HexTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/assets/mach_o.ksy" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/assets/mach_o.ksy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/file/ios/BaseDarwinFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/file/ios/BaseDarwinFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/file/ios/DarwinFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/file/ios/DarwinFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/hook/HookLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/hook/HookLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/hook/substrate/ISubstrate.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/hook/substrate/ISubstrate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ARM32SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ARM32SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ARM64SyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ARM64SyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinARM64Emulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinARM64Emulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinARMEmulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinARMEmulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinEmulatorBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinEmulatorBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinSyscall.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinSyscall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinSyscallHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/DarwinSyscallHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Dyld64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ExportSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ExportSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/IndirectSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/IndirectSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOModuleInit.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOModuleInit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/MachOSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Segment.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/Segment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/URLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/URLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/ByteArrayFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/ByteArrayFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/DirectoryFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/DirectoryFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/SimpleFileIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/SimpleFileIO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/Stdin.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/Stdin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/Stdout.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/Stdout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/TcpSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/file/TcpSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/FishHook.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/FishHook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/Substrate.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/Substrate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/SubstrateSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/hook/SubstrateSymbol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLibraryFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLibraryFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLoader64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaLoader64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/IpaResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/SymbolResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/ipa/SymbolResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/CDObjectiveC2Processor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/CDObjectiveCProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/NSData.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/NSData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/ObjC.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/ObjC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/Objc2Category.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/Objc2Class.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/Objc2Method.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/ObjcImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/objc/ObjcImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/patch/LibDispatchPatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/patch/LibDispatchPatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/DispatchSourceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/DispatchSourceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/KEvent64.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/attr/AttrList.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/attr/AttrList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/cf/CFString.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/cf/CFString.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/MachPortsLookup64Reply.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/MachPortsLookupReply.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Pthread64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Stat.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/Stat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/StatFS.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/StatFS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/TailqPthread.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/TaskInfoRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/kernel/TaskInfoRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ClassRO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ClassRO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ClassRW.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ClassRW.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/objc/ObjcObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldAllImageInfos32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldAllImageInfos32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldAllImageInfos64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldAllImageInfos64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldImageInfo32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldImageInfo32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldImageInfo64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/DyldImageInfo64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/EProc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/ExternProc32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/ExternProc32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/ExternProc64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/ExternProc64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/KInfoProc32.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/KInfoProc32.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/KInfoProc64.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/KInfoProc64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/Pcred.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/TaskDyldInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/TaskDyldInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/com/github/unidbg/ios/struct/sysctl/VmSpace.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/java/io/kaitai/MachO.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/java/io/kaitai/MachO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/AVFoundation/AVFoundation.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/AVFoundation/AVFoundation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CFNetwork/CFNetwork.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CFNetwork/CFNetwork.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CFNetwork/CFNetwork.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CFNetwork/CFNetwork.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreAudio/CoreAudio.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreAudio/CoreAudio.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreAudio/CoreAudio.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreAudio/CoreAudio.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreData/CoreData.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreData/CoreData.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreData/CoreData.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreData/CoreData.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreMedia/CoreMedia.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreMedia/CoreMedia.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreMedia/CoreMedia.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreMedia/CoreMedia.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreTelephony/CoreTelephony.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreTelephony/CoreTelephony.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreTelephony/CoreTelephony.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreTelephony/CoreTelephony.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreText/CoreText.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreText/CoreText.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreVideo/CoreVideo.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/CoreVideo/CoreVideo.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/PushKit/PushKit.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/PushKit/PushKit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/Security/Security.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/Security/Security.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/Security/Security.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/Security/Security.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/SystemConfiguration/SystemConfiguration.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/SystemConfiguration/SystemConfiguration.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/SystemConfiguration/SystemConfiguration.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/SystemConfiguration/SystemConfiguration.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/UIKit/UIKit.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/UIKit/UIKit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/UIKit/UIKit.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/UIKit/UIKit.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/frameworks.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/Frameworks/frameworks.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/PrivateFrameworks/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/PrivateFrameworks/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/bootstrap.mm" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/bootstrap.mm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/class-dump.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/class-dump.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/hook.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/hook.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/objc.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/objc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/objc_common.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/hook/objc_common.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/test.h" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/native/ios/test.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AVFoundation.framework/AVFoundation" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AVFoundation.framework/AVFoundation" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AVKit.framework/AVKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AVKit.framework/AVKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Accelerate.framework/Accelerate" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Accelerate.framework/Accelerate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AdSupport.framework/AdSupport" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AdSupport.framework/AdSupport" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AddressBook.framework/AddressBook" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AddressBook.framework/AddressBook" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AddressBookUI.framework/AddressBookUI" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AddressBookUI.framework/AddressBookUI" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CFNetwork.framework/CFNetwork" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CFNetwork.framework/CFNetwork" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CloudKit.framework/CloudKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CloudKit.framework/CloudKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Contacts.framework/Contacts" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Contacts.framework/Contacts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreAudio.framework/CoreAudio" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreAudio.framework/CoreAudio" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreData.framework/CoreData" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreData.framework/CoreData" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreImage.framework/CoreImage" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreImage.framework/CoreImage" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreLocation.framework/CoreLocation" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreLocation.framework/CoreLocation" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreML.framework/CoreML" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreML.framework/CoreML" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreMedia.framework/CoreMedia" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreMedia.framework/CoreMedia" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreMotion.framework/CoreMotion" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreMotion.framework/CoreMotion" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreSpotlight.framework/CoreSpotlight" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreSpotlight.framework/CoreSpotlight" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreText.framework/CoreText" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreText.framework/CoreText" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreVideo.framework/CoreVideo" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/CoreVideo.framework/CoreVideo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/EventKit.framework/EventKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/EventKit.framework/EventKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/EventKitUI.framework/EventKitUI" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/EventKitUI.framework/EventKitUI" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ExternalAccessory.framework/ExternalAccessory" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ExternalAccessory.framework/ExternalAccessory" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/GLKit.framework/GLKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/GLKit.framework/GLKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/GSS.framework/GSS" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/GSS.framework/GSS" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/IOKit.framework/IOKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/IOKit.framework/IOKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ImageIO.framework/ImageIO" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ImageIO.framework/ImageIO" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/LocalAuthentication.framework/LocalAuthentication" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/LocalAuthentication.framework/LocalAuthentication" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MapKit.framework/MapKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MapKit.framework/MapKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaAccessibility.framework/MediaAccessibility" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaAccessibility.framework/MediaAccessibility" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaPlayer.framework/MediaPlayer" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaPlayer.framework/MediaPlayer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaToolbox.framework/MediaToolbox" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MediaToolbox.framework/MediaToolbox" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MessageUI.framework/MessageUI" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MessageUI.framework/MessageUI" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Metal.framework/Metal" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Metal.framework/Metal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MetalKit.framework/MetalKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MetalKit.framework/MetalKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MetalPerformanceShaders.framework/MetalPerformanceShaders" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MetalPerformanceShaders.framework/MetalPerformanceShaders" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MultipeerConnectivity.framework/MultipeerConnectivity" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/MultipeerConnectivity.framework/MultipeerConnectivity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/OpenAL.framework/OpenAL" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/OpenAL.framework/OpenAL" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/OpenGLES.framework/OpenGLES" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/OpenGLES.framework/OpenGLES" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PassKit.framework/PassKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PassKit.framework/PassKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Photos.framework/Photos" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Photos.framework/Photos" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PhotosUI.framework/PhotosUI" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PhotosUI.framework/PhotosUI" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PushKit.framework/PushKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/PushKit.framework/PushKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/QuartzCore.framework/QuartzCore" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/QuartzCore.framework/QuartzCore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/QuickLook.framework/QuickLook" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/QuickLook.framework/QuickLook" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ReplayKit.framework/ReplayKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/ReplayKit.framework/ReplayKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SafariServices.framework/SafariServices" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SafariServices.framework/SafariServices" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SceneKit.framework/SceneKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SceneKit.framework/SceneKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Security.framework/Security" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Security.framework/Security" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/StoreKit.framework/StoreKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/StoreKit.framework/StoreKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/UIKit.framework/UIKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/UIKit.framework/UIKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/UserNotifications.framework/UserNotifications" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/UserNotifications.framework/UserNotifications" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/VideoToolbox.framework/VideoToolbox" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Vision.framework/Vision" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/Vision.framework/Vision" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/WebKit.framework/WebKit" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/System/Library/Frameworks/WebKit.framework/WebKit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/usr/lib/swift/libswiftModelIO.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/7.1/usr/lib/swift/libswiftModelIO.dylib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/bootstrap" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/bootstrap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/bootstrap_objc" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/bootstrap_objc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/lib/libclassdump.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/lib/libclassdump.dylib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/lib/libhook.dylib" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/main/resources/ios/lib/libhook.dylib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/A12ZTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/A12ZTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/ClassDump64Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/ClassDump64Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/ClassDumpTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/ClassDumpTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/EmulatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/EmulatorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/PListTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/PListTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/Substrate64Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/Substrate64Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/SubstrateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/SubstrateTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/XpcTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/java/com/github/unidbg/ios/XpcTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/resources/example_binaries/a12z_ios" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/resources/example_binaries/a12z_ios" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/resources/example_binaries/a12z_osx" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/resources/example_binaries/a12z_osx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/resources/log4j.properties" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/resources/log4j.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/resources/native/macos/a12z.m" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/resources/native/macos/a12z.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unidbg-ios/src/test/resources/native/macos/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/unidbg-ios/src/test/resources/native/macos/build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_alibaba_fastjson_1_2_60.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_zhkl0228_capstone_3_0_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_zhkl0228_demumble_1_0_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_zhkl0228_jna_silicon_4_5_2_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_github_zhkl0228_keystone_0_9_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_1_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_13_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_dongliu_apk_parser_2_6_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_jna_4_5_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_log4j12_1_7_26.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -470,7 +84,7 @@
       <recent name="$PROJECT_DIR$/unidbg-android/src/test/resources/example_binaries" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.NativeApi32">
+  <component name="RunManager" selected="Application.JNICLibrary32">
     <configuration name="JNICLibrary32" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.kuaishou.JNICLibrary32" />
       <module name="unidbg-android" />
@@ -486,19 +100,6 @@
     </configuration>
     <configuration name="NativeApi32" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.oasis.NativeApi32" />
-      <module name="unidbg-android" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.oasis.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="NativeApi32_n5" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.oasis.NativeApi32_n5" />
       <module name="unidbg-android" />
       <extension name="coverage">
         <pattern>
@@ -539,16 +140,14 @@
     <list>
       <item itemvalue="Application.JNICLibrary32" />
       <item itemvalue="Application.NativeApi32" />
-      <item itemvalue="Application.NativeApi32_n5" />
       <item itemvalue="Application.NativeApi64" />
       <item itemvalue="Application.SignUtil" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.NativeApi32" />
-        <item itemvalue="Application.NativeApi64" />
         <item itemvalue="Application.JNICLibrary32" />
-        <item itemvalue="Application.NativeApi32_n5" />
+        <item itemvalue="Application.NativeApi64" />
+        <item itemvalue="Application.NativeApi32" />
         <item itemvalue="Application.SignUtil" />
       </list>
     </recent_temporary>
@@ -570,6 +169,11 @@
       <workItem from="1663240310077" duration="83064000" />
       <workItem from="1663669570308" duration="375000" />
       <workItem from="1663670049415" duration="447000" />
+      <workItem from="1663670922756" duration="646000" />
+      <workItem from="1663674435102" duration="137000" />
+      <workItem from="1663675652726" duration="116000" />
+      <workItem from="1663675797543" duration="17000" />
+      <workItem from="1663675946349" duration="42000" />
     </task>
     <servers />
   </component>
@@ -593,10 +197,11 @@
       <screen x="0" y="25" width="1792" height="1034" />
     </state>
     <state x="653" y="328" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663569460176" />
-    <state x="379" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1663640122847">
+    <state x="379" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1663675746621">
       <screen x="0" y="25" width="1792" height="1034" />
     </state>
-    <state x="379" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663640122847" />
+    <state x="459" y="-1158" key="#com.intellij.execution.impl.EditConfigurationsDialog/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663671049015" />
+    <state x="379" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663675746621" />
     <state x="379" y="213" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1792.1034@0.25.1792.1034" timestamp="1663638546750" />
     <state x="808" y="227" key="#com.intellij.ide.util.MemberChooser" timestamp="1663639650825">
       <screen x="0" y="25" width="1792" height="1034" />
@@ -620,41 +225,41 @@
       <screen x="0" y="25" width="1792" height="1034" />
     </state>
     <state x="617" y="296" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663598655944" />
-    <state width="1541" height="229" key="GridCell.Tab.0.bottom" timestamp="1663670495864">
-      <screen x="-82" y="-1415" width="2560" height="1415" />
+    <state width="1541" height="229" key="GridCell.Tab.0.bottom" timestamp="1663675632951">
+      <screen x="0" y="25" width="1792" height="1034" />
     </state>
-    <state width="1541" height="229" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663670495864" />
-    <state width="1541" height="318" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663669549406" />
+    <state width="1541" height="229" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663673821634" />
+    <state width="1541" height="229" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663675632951" />
     <state width="1541" height="257" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1035@-82.-1415.2560.1415" timestamp="1662882527330" />
     <state width="1541" height="257" key="GridCell.Tab.0.bottom/-82.-1415.2560.1415/0.25.1792.1037@-82.-1415.2560.1415" timestamp="1662838265637" />
     <state width="1541" height="318" key="GridCell.Tab.0.bottom/-82.-1440.2560.1440/0.25.1792.1034@0.25.1792.1034" timestamp="1663240142160" />
     <state width="1541" height="257" key="GridCell.Tab.0.bottom/0.25.1792.1034@0.25.1792.1034" timestamp="1663638550065" />
     <state width="1541" height="257" key="GridCell.Tab.0.bottom/0.25.1792.1035/-391.-1415.2560.1415@-391.-1415.2560.1415" timestamp="1662603602444" />
-    <state width="1541" height="229" key="GridCell.Tab.0.center" timestamp="1663670495863">
-      <screen x="-82" y="-1415" width="2560" height="1415" />
+    <state width="1541" height="229" key="GridCell.Tab.0.center" timestamp="1663675632950">
+      <screen x="0" y="25" width="1792" height="1034" />
     </state>
-    <state width="1541" height="229" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663670495863" />
-    <state width="1541" height="318" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663669549405" />
+    <state width="1541" height="229" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663673821633" />
+    <state width="1541" height="229" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663675632950" />
     <state width="1541" height="257" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1035@-82.-1415.2560.1415" timestamp="1662882527329" />
     <state width="1541" height="257" key="GridCell.Tab.0.center/-82.-1415.2560.1415/0.25.1792.1037@-82.-1415.2560.1415" timestamp="1662838265636" />
     <state width="1541" height="318" key="GridCell.Tab.0.center/-82.-1440.2560.1440/0.25.1792.1034@0.25.1792.1034" timestamp="1663240142159" />
     <state width="1541" height="257" key="GridCell.Tab.0.center/0.25.1792.1034@0.25.1792.1034" timestamp="1663638550064" />
     <state width="1541" height="257" key="GridCell.Tab.0.center/0.25.1792.1035/-391.-1415.2560.1415@-391.-1415.2560.1415" timestamp="1662603602443" />
-    <state width="1541" height="229" key="GridCell.Tab.0.left" timestamp="1663670495863">
-      <screen x="-82" y="-1415" width="2560" height="1415" />
+    <state width="1541" height="229" key="GridCell.Tab.0.left" timestamp="1663675632950">
+      <screen x="0" y="25" width="1792" height="1034" />
     </state>
-    <state width="1541" height="229" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663670495863" />
-    <state width="1541" height="318" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663669549405" />
+    <state width="1541" height="229" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663673821633" />
+    <state width="1541" height="229" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663675632950" />
     <state width="1541" height="257" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1035@-82.-1415.2560.1415" timestamp="1662882527328" />
     <state width="1541" height="257" key="GridCell.Tab.0.left/-82.-1415.2560.1415/0.25.1792.1037@-82.-1415.2560.1415" timestamp="1662838265635" />
     <state width="1541" height="318" key="GridCell.Tab.0.left/-82.-1440.2560.1440/0.25.1792.1034@0.25.1792.1034" timestamp="1663240142159" />
     <state width="1541" height="257" key="GridCell.Tab.0.left/0.25.1792.1034@0.25.1792.1034" timestamp="1663638550064" />
     <state width="1541" height="257" key="GridCell.Tab.0.left/0.25.1792.1035/-391.-1415.2560.1415@-391.-1415.2560.1415" timestamp="1662603602442" />
-    <state width="1541" height="229" key="GridCell.Tab.0.right" timestamp="1663670495863">
-      <screen x="-82" y="-1415" width="2560" height="1415" />
+    <state width="1541" height="229" key="GridCell.Tab.0.right" timestamp="1663675632950">
+      <screen x="0" y="25" width="1792" height="1034" />
     </state>
-    <state width="1541" height="229" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663670495863" />
-    <state width="1541" height="318" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663669549405" />
+    <state width="1541" height="229" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1034@-82.-1415.2560.1415" timestamp="1663673821634" />
+    <state width="1541" height="229" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1034@0.25.1792.1034" timestamp="1663675632950" />
     <state width="1541" height="257" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1035@-82.-1415.2560.1415" timestamp="1662882527329" />
     <state width="1541" height="257" key="GridCell.Tab.0.right/-82.-1415.2560.1415/0.25.1792.1037@-82.-1415.2560.1415" timestamp="1662838265636" />
     <state width="1541" height="318" key="GridCell.Tab.0.right/-82.-1440.2560.1440/0.25.1792.1034@0.25.1792.1034" timestamp="1663240142159" />
