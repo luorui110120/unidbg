@@ -1,5 +1,13 @@
 #import "SystemConfiguration.h"
 
+@implementation __SCNetworkReachability
+-(id)initWithNodeName: (const char *) nodename {
+  [super init];
+  self.nodename = nodename;
+  return self;
+}
+@end
+
 CFStringRef SCNetworkReachabilityCreateWithAddress(CFAllocatorRef allocator, const struct sockaddr *address) {
   uintptr_t lr = 1;
   __asm__(
@@ -108,4 +116,35 @@ CFDictionaryRef SCDynamicStoreCopyProxies(SCDynamicStoreRef store) {
     fprintf(stderr, "SCDynamicStoreCopyProxies store=%p\n, LR=%s", store, buf);
   }
   return NULL;
+}
+
+SCNetworkReachabilityRef SCNetworkReachabilityCreateWithName(CFAllocatorRef allocator, const char *nodename) {
+  uintptr_t lr = (uintptr_t) __builtin_return_address(0);
+  SCNetworkReachabilityRef ref = [[__SCNetworkReachability alloc] initWithNodeName: nodename];
+  if(is_debug()) {
+    char buf[512];
+    print_lr(buf, lr);
+    fprintf(stderr, "SCNetworkReachabilityCreateWithName nodename=\"%s\", ref=%p, LR=%s", nodename, ref, buf);
+  }
+  return ref;
+}
+
+Boolean SCNetworkReachabilitySetDispatchQueue(SCNetworkReachabilityRef target, dispatch_queue_t queue) {
+  uintptr_t lr = (uintptr_t) __builtin_return_address(0);
+  if(is_debug()) {
+    char buf[512];
+    print_lr(buf, lr);
+    fprintf(stderr, "SCNetworkReachabilitySetDispatchQueue target=%p, queue=%p, LR=%s", target, queue, buf);
+  }
+  return YES;
+}
+
+Boolean SCNetworkReachabilityUnscheduleFromRunLoop(SCNetworkReachabilityRef target, CFRunLoopRef runLoop, CFStringRef runLoopMode) {
+  uintptr_t lr = (uintptr_t) __builtin_return_address(0);
+  if(is_debug()) {
+    char buf[512];
+    print_lr(buf, lr);
+    fprintf(stderr, "SCNetworkReachabilityUnscheduleFromRunLoop target=%p, runLoop=%p, LR=%s", target, runLoop, buf);
+  }
+  return YES;
 }

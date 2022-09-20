@@ -3,56 +3,42 @@ package com.github.unidbg.linux.thread;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.Symbol;
-import com.github.unidbg.arm.Arm64Svc;
-import com.github.unidbg.arm.ArmSvc;
-import com.github.unidbg.arm.context.RegisterContext;
-import com.github.unidbg.hook.hookzz.IHookZz;
+import com.github.unidbg.arm.HookStatus;
+import com.github.unidbg.hook.HookContext;
+import com.github.unidbg.hook.InlineHook;
+import com.github.unidbg.hook.ReplaceCallback;
 import com.github.unidbg.memory.Memory;
-import com.github.unidbg.memory.SvcMemory;
-import com.github.unidbg.pointer.UnidbgPointer;
+import com.github.unidbg.unix.ThreadJoinVisitor;
 import com.sun.jna.Pointer;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ThreadJoin23 {
 
-    public static void patch(Emulator<?> emulator, IHookZz hookZz) {
+    public static void patch(final Emulator<?> emulator, InlineHook inlineHook, final ThreadJoinVisitor visitor) {
         Memory memory = emulator.getMemory();
-        SvcMemory svcMemory = emulator.getSvcMemory();
         Module libc = memory.findModule("libc.so");
         Symbol clone = libc.findSymbolByName("clone", false);
-        if (clone == null) {
-            throw new IllegalStateException("find clone failed.");
+        Symbol pthread_join = libc.findSymbolByName("pthread_join", false);
+        if (clone == null || pthread_join == null) {
+            throw new IllegalStateException("clone=" + clone + ", pthread_join=" + pthread_join);
         }
-        hookZz.replace(clone, svcMemory.registerSvc(emulator.is32Bit() ? new ArmSvc() {
+        final AtomicLong value_ptr = new AtomicLong();
+        inlineHook.replace(pthread_join, new ReplaceCallback() {
             @Override
-            public long handle(Emulator<?> emulator) {
-                RegisterContext context = emulator.getContext();
-                Pointer pthread_start = context.getPointerArg(0);
-                Pointer child_stack = context.getPointerArg(1);
-                int flags = context.getIntArg(2);
-                Pointer thread = context.getPointerArg(3);
-                System.out.println("clone pthread_start=" + pthread_start + ", child_stack=" + child_stack + ", flags=0x" + Integer.toHexString(flags) + ", thread=" + thread);
-                return 0;
+            public HookStatus onCall(Emulator<?> emulator, HookContext context, long originFunction) {
+                Pointer ptr = context.getPointerArg(1);
+                if (ptr != null) {
+                    if (emulator.is64Bit()) {
+                        ptr.setLong(0, value_ptr.get());
+                    } else {
+                        ptr.setInt(0, (int) value_ptr.get());
+                    }
+                }
+                return HookStatus.LR(emulator, 0);
             }
-            @Override
-            public UnidbgPointer onRegister(SvcMemory svcMemory, int svcNumber) {
-                ByteBuffer buffer = ByteBuffer.allocate(8);
-                buffer.order(ByteOrder.LITTLE_ENDIAN);
-                buffer.putInt(assembleSvc(svcNumber)); // svc #svcNumber
-                buffer.putInt(0xe12fff1e); // bx lr
-                byte[] code = buffer.array();
-                UnidbgPointer pointer = svcMemory.allocate(code.length, "ArmSvc");
-                pointer.write(code);
-                return pointer;
-            }
-        } : new Arm64Svc() {
-            @Override
-            public long handle(Emulator<?> emulator) {
-                throw new UnsupportedOperationException();
-            }
-        }));
+        });
+        inlineHook.replace(clone, emulator.is32Bit() ? new ClonePatcher32(visitor, value_ptr) : new ClonePatcher64(visitor, value_ptr));
     }
 
 }

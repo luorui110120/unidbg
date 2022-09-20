@@ -14,6 +14,7 @@ import com.github.unidbg.hook.substrate.ISubstrate;
 import com.github.unidbg.ios.classdump.ClassDumper;
 import com.github.unidbg.ios.classdump.IClassDumper;
 import com.github.unidbg.ios.hook.Substrate;
+import com.github.unidbg.ios.ipa.SymbolResolver;
 import com.github.unidbg.ios.objc.ObjC;
 import com.github.unidbg.ios.struct.objc.ObjcClass;
 import com.github.unidbg.ios.struct.objc.ObjcObject;
@@ -25,7 +26,7 @@ public class ClassDump64Test extends EmulatorTest<ARMEmulator<DarwinFileIO>> {
 
     @Override
     protected LibraryResolver createLibraryResolver() {
-        return new DarwinResolver();
+        return new DarwinResolver().setOverride();
     }
 
     @Override
@@ -39,6 +40,8 @@ public class ClassDump64Test extends EmulatorTest<ARMEmulator<DarwinFileIO>> {
     }
 
     public void testClassDump() {
+        emulator.getMemory().addHookListener(new SymbolResolver(emulator));
+
         MachOLoader loader = (MachOLoader) emulator.getMemory();
         loader.setObjcRuntime(true);
         IClassDumper classDumper = ClassDumper.getInstance(emulator);

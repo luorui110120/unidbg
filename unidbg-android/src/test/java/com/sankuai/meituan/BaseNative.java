@@ -73,7 +73,7 @@ public abstract class BaseNative {
 
         //// 设置监控的其实地址和结束地址, 这些都是内存地址 ea ,所以要加上基地址   dm.base
         trace.initialize(1,0,null);
-        ////
+        ////开启打印每条 arm指令集
         //emulator.getBackend().hook_add_new(trace,1,0,emulator);
 
     }

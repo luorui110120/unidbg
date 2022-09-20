@@ -46,6 +46,14 @@ public class Utils {
         return (high << 32L) | low;
     }
 
+    public static byte[] unpack_bytes(ByteBuffer buffer, int size){
+        byte[] retbytes = new byte[size];
+        for(int i = 0; i < size; i++){
+            retbytes[i] = buffer.get();
+        }
+        return retbytes;
+    }
+
     public static byte[] pack_dq(long value) {
         byte[] d1 = pack_dd(value);
         byte[] d2 = pack_dd(value >> 32);

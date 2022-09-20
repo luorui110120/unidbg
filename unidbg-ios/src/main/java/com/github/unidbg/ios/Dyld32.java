@@ -3,7 +3,6 @@ package com.github.unidbg.ios;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.Symbol;
-import com.github.unidbg.arm.AbstractARMEmulator;
 import com.github.unidbg.arm.ArmHook;
 import com.github.unidbg.arm.ArmSvc;
 import com.github.unidbg.arm.HookStatus;
@@ -16,7 +15,7 @@ import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.pointer.UnidbgPointer;
 import com.github.unidbg.pointer.UnidbgStructure;
 import com.github.unidbg.spi.InitFunction;
-import com.github.unidbg.unix.struct.DlInfo;
+import com.github.unidbg.unix.struct.DlInfo32;
 import com.sun.jna.Pointer;
 import keystone.Keystone;
 import keystone.KeystoneArchitecture;
@@ -26,9 +25,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.ArmConst;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Dyld32 extends Dyld {
@@ -157,7 +159,9 @@ public class Dyld32 extends Dyld {
                     if (callback != null && !loader.addImageCallbacks.contains(callback)) {
                         loader.addImageCallbacks.add(callback);
 
-                        for (Module md : loader.getLoadedModulesNoVirtual()) {
+                        List<Module> modules = loader.getLoadedModulesNoVirtual();
+                        Collections.reverse(modules);
+                        for (Module md : modules) {
                             Log log = LogFactory.getLog("com.github.unidbg.ios." + md.name);
                             MachOModule mm = (MachOModule) md;
                             if (mm.executable) {
@@ -295,13 +299,20 @@ public class Dyld32 extends Dyld {
         __dyld__NSGetExecutablePath = svcMemory.registerSvc(new ArmSvc() {
             @Override
             public long handle(Emulator<?> emulator) {
-                Pointer buf = UnidbgPointer.register(emulator, ArmConst.UC_ARM_REG_R0);
-                int bufSize = emulator.getBackend().reg_read(ArmConst.UC_ARM_REG_R1).intValue();
+                RegisterContext context = emulator.getContext();
+                Pointer buf = context.getPointerArg(0);
+                Pointer bufSize = context.getPointerArg(1);
                 if (log.isDebugEnabled()) {
                     log.debug("__dyld__NSGetExecutablePath buf=" + buf + ", bufSize=" + bufSize);
                 }
-                buf.setString(0, emulator.getProcessName());
-                return 0;
+                byte[] str = emulator.getProcessName().getBytes(StandardCharsets.UTF_8);
+                byte[] data = Arrays.copyOf(str, str.length + 1);
+                if (bufSize.getInt(0) >= data.length) {
+                    buf.write(0, data, 0, data.length);
+                    return 0;
+                }
+                bufSize.setInt(0, data.length);
+                return -1;
             }
         });
         __dyld_fast_stub_entry = svcMemory.registerSvc(new ArmSvc() {
@@ -358,7 +369,7 @@ public class Dyld32 extends Dyld {
                 }
 
                 String symbolName = symbol.getString(0);
-                if ((int) handle == MachO.RTLD_MAIN_ONLY && "_os_trace_redirect_func".equals(symbolName)) {
+                if ((int) handle == Dyld.RTLD_MAIN_ONLY && "_os_trace_redirect_func".equals(symbolName)) {
                     return _os_trace_redirect_func;
                 }
 
@@ -380,12 +391,12 @@ public class Dyld32 extends Dyld {
 
                 Symbol symbol = module.findClosestSymbolByAddress(addr, true);
 
-                DlInfo dlInfo = new DlInfo(info);
-                dlInfo.dli_fname = module.createPathMemory(svcMemory);
-                dlInfo.dli_fbase = UnidbgPointer.pointer(emulator, module.machHeader);
+                DlInfo32 dlInfo = new DlInfo32(info);
+                dlInfo.dli_fname = (int) UnidbgPointer.nativeValue(module.createPathMemory(svcMemory));
+                dlInfo.dli_fbase = (int) module.machHeader;
                 if (symbol != null) {
-                    dlInfo.dli_sname = symbol.createNameMemory(svcMemory);
-                    dlInfo.dli_saddr = UnidbgPointer.pointer(emulator, symbol.getAddress());
+                    dlInfo.dli_sname = (int) UnidbgPointer.nativeValue(symbol.createNameMemory(svcMemory));
+                    dlInfo.dli_saddr = (int) symbol.getAddress();
                 }
                 dlInfo.pack();
                 return 1;
@@ -606,7 +617,7 @@ public class Dyld32 extends Dyld {
                         public long handle(Emulator<?> emulator) {
                             System.err.println("abort");
                             emulator.attach().debug();
-                            emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_LR, AbstractARMEmulator.LR);
+                            emulator.getBackend().reg_write(ArmConst.UC_ARM_REG_LR, emulator.getReturnAddress());
                             return 0;
                         }
                     }).peer;

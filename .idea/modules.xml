@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/unidbg-android/unidbg-android.iml" filepath="$PROJECT_DIR$/unidbg-android/unidbg-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unidbg-api/unidbg-api.iml" filepath="$PROJECT_DIR$/unidbg-api/unidbg-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/dynarmic/unidbg-dynarmic.iml" filepath="$PROJECT_DIR$/backend/dynarmic/unidbg-dynarmic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/hypervisor/unidbg-hypervisor.iml" filepath="$PROJECT_DIR$/backend/hypervisor/unidbg-hypervisor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unidbg-ios/unidbg-ios.iml" filepath="$PROJECT_DIR$/unidbg-ios/unidbg-ios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/kvm/unidbg-kvm.iml" filepath="$PROJECT_DIR$/backend/kvm/unidbg-kvm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unidbg-parent.iml" filepath="$PROJECT_DIR$/unidbg-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/unicorn2/unidbg-unicorn2.iml" filepath="$PROJECT_DIR$/backend/unicorn2/unidbg-unicorn2.iml" />
+    </modules>
+  </component>
+</project>

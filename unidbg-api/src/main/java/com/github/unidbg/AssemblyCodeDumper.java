@@ -1,12 +1,15 @@
 package com.github.unidbg;
 
-import capstone.Capstone;
+import capstone.api.Instruction;
+import capstone.api.RegsAccess;
 import com.alibaba.fastjson.util.IOUtils;
+import com.github.unidbg.arm.InstructionVisitor;
 import com.github.unidbg.arm.backend.Backend;
 import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.backend.CodeHook;
+import com.github.unidbg.arm.backend.UnHook;
 import com.github.unidbg.listener.TraceCodeListener;
-import unicorn.Unicorn;
+import com.github.unidbg.memory.Memory;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -20,27 +23,49 @@ public class AssemblyCodeDumper implements CodeHook, TraceHook {
 
     private final Emulator<?> emulator;
 
-    public AssemblyCodeDumper(Emulator<?> emulator) {
+    public AssemblyCodeDumper(Emulator<?> emulator, long begin, long end, TraceCodeListener listener) {
         super();
 
         this.emulator = emulator;
-    }
-
-    private boolean traceInstruction;
-    private long traceBegin, traceEnd;
-    private TraceCodeListener listener;
-
-    public void initialize(long begin, long end, TraceCodeListener listener) {
-        this.traceInstruction = true;
         this.traceBegin = begin;
         this.traceEnd = end;
         this.listener = listener;
+
+        Memory memory = emulator.getMemory();
+        if (begin > end) {
+            //System.out.println(memory.getMaxLengthLibraryName());
+            String lname = memory.getMaxLengthLibraryName();
+            if(null != lname){
+                maxLengthLibraryName = memory.getMaxLengthLibraryName().length();
+            }
+            else{
+                maxLengthLibraryName = 0;
+            }
+
+        } else {
+            int value = 0;
+            for (Module module : memory.getLoadedModules()) {
+                long min = Math.max(begin, module.base);
+                long max = Math.min(end, module.base + module.size);
+                if (min < max) {
+                    int length = module.name.length();
+                    if (length > value) {
+                        value = length;
+                    }
+                }
+            }
+            maxLengthLibraryName = value;
+        }
     }
 
-    private Unicorn.UnHook unHook;
+    private final long traceBegin, traceEnd;
+    private final TraceCodeListener listener;
+    private final int maxLengthLibraryName;
+
+    private UnHook unHook;
 
     @Override
-    public void onAttach(Unicorn.UnHook unHook) {
+    public void onAttach(UnHook unHook) {
         if (this.unHook != null) {
             throw new IllegalStateException();
         }
@@ -63,7 +88,7 @@ public class AssemblyCodeDumper implements CodeHook, TraceHook {
     }
 
     private boolean canTrace(long address) {
-        return traceInstruction && (traceBegin > traceEnd || (address >= traceBegin && address <= traceEnd));
+        return (traceBegin > traceEnd || (address >= traceBegin && address <= traceEnd));
     }
 
     private PrintStream redirect;
@@ -73,15 +98,38 @@ public class AssemblyCodeDumper implements CodeHook, TraceHook {
         this.redirect = redirect;
     }
 
+    private RegAccessPrinter lastInstructionWritePrinter;
+
     @Override
-    public void hook(Backend backend, long address, int size, Object user) {
+    public void hook(final Backend backend, final long address, final int size, Object user) {
         if (canTrace(address)) {
             try {
-                PrintStream out = System.out;
+                PrintStream out = System.err;
                 if (redirect != null) {
                     out = redirect;
                 }
-                Capstone.CsInsn[] insns = emulator.printAssemble(out, address, size);
+                Instruction[] insns = emulator.printAssemble(out, address, size, maxLengthLibraryName, new InstructionVisitor() {
+                    @Override
+                    public void visitLast(StringBuilder builder) {
+                        if (lastInstructionWritePrinter != null) {
+                            lastInstructionWritePrinter.print(emulator, backend, builder, address);
+                        }
+                    }
+                    @Override
+                    public void visit(StringBuilder builder, Instruction ins) {
+                        RegsAccess regsAccess = ins.regsAccess();
+                        if (regsAccess != null) {
+                            short[] regsRead = regsAccess.getRegsRead();
+                            RegAccessPrinter readPrinter = new RegAccessPrinter(address, ins, regsRead, false);
+                            readPrinter.print(emulator, backend, builder, address);
+
+                            short[] regWrite = regsAccess.getRegsWrite();
+                            if (regWrite.length > 0) {
+                                lastInstructionWritePrinter = new RegAccessPrinter(address + size, ins, regWrite, true);
+                            }
+                        }
+                    }
+                });
                 if (listener != null) {
                     if (insns == null || insns.length != 1) {
                         throw new IllegalStateException("insns=" + Arrays.toString(insns));

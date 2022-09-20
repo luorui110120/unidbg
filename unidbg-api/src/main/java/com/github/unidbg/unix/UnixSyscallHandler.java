@@ -3,6 +3,7 @@ package com.github.unidbg.unix;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Family;
 import com.github.unidbg.Module;
+import com.github.unidbg.arm.backend.UnHook;
 import com.github.unidbg.debugger.Breaker;
 import com.github.unidbg.file.FileIO;
 import com.github.unidbg.file.FileResult;
@@ -10,6 +11,7 @@ import com.github.unidbg.file.IOResolver;
 import com.github.unidbg.file.NewFileIO;
 import com.github.unidbg.memory.MemRegion;
 import com.github.unidbg.spi.SyscallHandler;
+import com.github.unidbg.thread.MainTask;
 import com.github.unidbg.unix.struct.TimeVal32;
 import com.github.unidbg.unix.struct.TimeVal64;
 import com.github.unidbg.unix.struct.TimeZone;
@@ -21,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +39,12 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
 
     private final List<IOResolver<T>> resolvers = new ArrayList<>(5);
 
-    public final Map<Integer, T> fdMap = new TreeMap<>();
+    protected final Map<Integer, T> fdMap = new TreeMap<>();
 
-    public final Map<Integer, Thread> threadMap = new HashMap<>(5);
-    public int lastThread = -1;
+    @Override
+    public FileIO getFileIO(int fd) {
+        return fdMap.get(fd);
+    }
 
     protected boolean verbose;
 
@@ -244,7 +249,7 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
         return 0;
     }
 
-    protected final int sigprocmask(Emulator<?> emulator, int how, Pointer set, Pointer oldset) {
+    protected int sigprocmask(Emulator<?> emulator, int how, Pointer set, Pointer oldset) {
         if (log.isDebugEnabled()) {
             log.debug("sigprocmask how=" + how + ", set=" + set + ", oldset=" + oldset);
         }
@@ -263,8 +268,17 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
             return -1;
         }
         int read = file.read(emulator.getBackend(), buffer, count);
-        if (verbose) {
+        if (verbose && !file.isStdIO()) {
             System.out.printf("Read %d bytes from '%s'%n", read, file);
+        }
+        if (fileListener != null) {
+            byte[] bytes;
+            if (read <= 0) {
+                bytes = new byte[0];
+            } else {
+                bytes = buffer.getByteArray(0, read);
+            }
+            fileListener.onRead(emulator, String.valueOf(file), bytes);
         }
         return read;
     }
@@ -403,12 +417,12 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
     private static final int SIGSYS = 31; /* Bad system call.  */
     private static final int SIGRTMIN = 32;
 
-    protected final int sigaction(int signum, Pointer act, Pointer oldact) {
+    protected int sigaction(Emulator<?> emulator, int signum, Pointer act, Pointer oldact) {
         final int ACT_SIZE = 16;
-        return sigaction(signum, act, oldact, ACT_SIZE);
+        return sigaction(emulator, signum, act, oldact, ACT_SIZE);
     }
 
-    protected final int sigaction(int signum, Pointer act, Pointer oldact, int sizeOfSigAction) {
+    protected final int sigaction(Emulator<?> emulator, int signum, Pointer act, Pointer oldact, int sizeOfSigAction) {
         String prefix = "Unknown";
         if (signum > 32) {
             signum -= 32;
@@ -453,6 +467,7 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
                 return 0;
         }
 
+        createBreaker(emulator).debug();
         throw new UnsupportedOperationException("signum=" + signum);
     }
 
@@ -522,8 +537,17 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
             return -1;
         }
         int write = file.write(data);
-        if (verbose) {
+        if (verbose && !file.isStdIO()) {
             System.out.printf("Write %d bytes to '%s'%n", write, file);
+        }
+        if (fileListener != null) {
+            byte[] bytes;
+            if (write <= 0) {
+                bytes = new byte[0];
+            } else {
+                bytes = Arrays.copyOf(data, write);
+            }
+            fileListener.onWrite(emulator, String.valueOf(file), bytes);
         }
         return write;
     }
@@ -557,4 +581,31 @@ public abstract class UnixSyscallHandler<T extends NewFileIO> implements Syscall
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void onAttach(UnHook unHook) {
+    }
+
+    @Override
+    public void detach() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void destroy() {
+        for (FileIO io : fdMap.values()) {
+            io.close();
+        }
+    }
+
+    protected boolean threadDispatcherEnabled;
+
+    @Override
+    public void setEnableThreadDispatcher(boolean threadDispatcherEnabled) {
+        this.threadDispatcherEnabled = threadDispatcherEnabled;
+    }
+
+    @Override
+    public MainTask createSignalHandlerTask(Emulator<?> emulator, int sig) {
+        return null;
+    }
 }

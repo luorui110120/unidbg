@@ -22,8 +22,6 @@ public abstract class HypervisorBackend extends FastBackend implements Backend, 
     protected final Hypervisor hypervisor;
     private final int pageSize;
 
-    protected static final long REG_VBAR_EL1 = 0xf0000000L;
-
     protected HypervisorBackend(Emulator<?> emulator, Hypervisor hypervisor) throws BackendException {
         super(emulator);
         this.hypervisor = hypervisor;
@@ -39,18 +37,18 @@ public abstract class HypervisorBackend extends FastBackend implements Backend, 
     public void onInitialize() {
         super.onInitialize();
 
-        mem_map(REG_VBAR_EL1, getPageSize(), UnicornConst.UC_PROT_READ | UnicornConst.UC_PROT_EXEC);
+        mem_map(Hypervisor.REG_VBAR_EL1, getPageSize(), UnicornConst.UC_PROT_READ | UnicornConst.UC_PROT_EXEC);
         ByteBuffer buffer = ByteBuffer.allocate(getPageSize());
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         while (buffer.hasRemaining()) {
             if (buffer.position() == 0x400) {
                 buffer.putInt(0xd4000002); // hvc #0
-            }
-            if (buffer.hasRemaining()) {
                 buffer.putInt(0xd69f03e0); // eret
+                continue;
             }
+            buffer.putInt(0xd4201100); // brk #0x88
         }
-        UnidbgPointer ptr = UnidbgPointer.pointer(emulator, REG_VBAR_EL1);
+        UnidbgPointer ptr = UnidbgPointer.pointer(emulator, Hypervisor.REG_VBAR_EL1);
         assert ptr != null;
         ptr.write(buffer.array());
     }
@@ -130,27 +128,42 @@ public abstract class HypervisorBackend extends FastBackend implements Backend, 
         }
     }
 
-    @Override
-    public void hook_add_new(CodeHook callback, long begin, long end, Object user_data) throws BackendException {
-        throw new UnsupportedOperationException();
+    protected class EventMemHookNotifier {
+        private final EventMemHook callback;
+        private final int type;
+        private final Object user;
+
+        public EventMemHookNotifier(EventMemHook callback, int type, Object user) {
+            this.callback = callback;
+            this.type = type;
+            this.user = user;
+        }
+        public void notifyDataAbort(boolean isWrite, int size, long address) {
+            if (isWrite) {
+                if ((type & UnicornConst.UC_HOOK_MEM_WRITE_UNMAPPED) != 0) {
+                    callback.hook(HypervisorBackend.this, address, size, 0L, user, EventMemHook.UnmappedType.Write);
+                }
+            } else {
+                if ((type & UnicornConst.UC_HOOK_MEM_READ_UNMAPPED) != 0) {
+                    callback.hook(HypervisorBackend.this, address, size, 0L, user, EventMemHook.UnmappedType.Read);
+                }
+            }
+        }
+        public void notifyInsnAbort(long address) {
+            if ((type & UnicornConst.UC_HOOK_MEM_FETCH_UNMAPPED) != 0) {
+                callback.hook(HypervisorBackend.this, address, 4, 0L, user, EventMemHook.UnmappedType.Fetch);
+            }
+        }
     }
 
-    @Override
-    public void debugger_add(DebugHook callback, long begin, long end, Object user_data) throws BackendException {
-    }
-
-    @Override
-    public void hook_add_new(ReadHook callback, long begin, long end, Object user_data) throws BackendException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void hook_add_new(WriteHook callback, long begin, long end, Object user_data) throws BackendException {
-        throw new UnsupportedOperationException();
-    }
+    protected EventMemHookNotifier eventMemHookNotifier;
 
     @Override
     public void hook_add_new(EventMemHook callback, int type, Object user_data) throws BackendException {
+        if (eventMemHookNotifier != null) {
+            throw new IllegalStateException();
+        }
+        eventMemHookNotifier = new EventMemHookNotifier(callback, type, user_data);
     }
 
     protected InterruptHookNotifier interruptHookNotifier;
@@ -207,21 +220,6 @@ public abstract class HypervisorBackend extends FastBackend implements Backend, 
     @Override
     public void destroy() throws BackendException {
         IOUtils.close(hypervisor);
-    }
-
-    @Override
-    public void context_restore(long context) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void context_save(long context) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public long context_alloc() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

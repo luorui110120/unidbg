@@ -4,6 +4,7 @@ import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.backend.DynarmicBackend;
+import com.github.unidbg.debugger.MmapInfo;
 import keystone.Keystone;
 import keystone.KeystoneArchitecture;
 import keystone.KeystoneEncoded;
@@ -11,6 +12,8 @@ import keystone.KeystoneMode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.ArmConst;
+
+import java.util.List;
 
 public class DynarmicBackend32 extends DynarmicBackend {
 
@@ -30,11 +33,6 @@ public class DynarmicBackend32 extends DynarmicBackend {
             return;
         }
         interruptHookNotifier.notifyCallSVC(this, ARMEmulator.EXCP_SWI, swi);
-    }
-
-    @Override
-    public boolean handleInterpreterFallback(long pc, int num_instructions) {
-        throw new AbstractMethodError();
     }
 
     @Override
@@ -108,6 +106,11 @@ public class DynarmicBackend32 extends DynarmicBackend {
         } catch (DynarmicException e) {
             throw new BackendException(e);
         }
+    }
+
+    @Override
+    public List<MmapInfo> mem_maplist() {
+        return null;
     }
 
     @Override

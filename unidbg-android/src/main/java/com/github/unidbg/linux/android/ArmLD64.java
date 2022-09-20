@@ -8,7 +8,7 @@ import com.github.unidbg.arm.Arm64Svc;
 import com.github.unidbg.arm.backend.Backend;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.linux.LinuxModule;
-import com.github.unidbg.linux.struct.dl_phdr_info;
+import com.github.unidbg.linux.struct.dl_phdr_info64;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.MemoryBlock;
 import com.github.unidbg.memory.SvcMemory;
@@ -16,14 +16,13 @@ import com.github.unidbg.pointer.UnidbgPointer;
 import com.github.unidbg.pointer.UnidbgStructure;
 import com.github.unidbg.spi.Dlfcn;
 import com.github.unidbg.spi.InitFunction;
-import com.github.unidbg.unix.struct.DlInfo;
+import com.github.unidbg.unix.struct.DlInfo64;
 import com.sun.jna.Pointer;
 import keystone.Keystone;
 import keystone.KeystoneArchitecture;
 import keystone.KeystoneEncoded;
 import keystone.KeystoneMode;
 import net.fornwall.jelf.ElfDynamicStructure;
-import net.fornwall.jelf.ElfFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.Arm64Const;
@@ -65,9 +64,9 @@ public class ArmLD64 extends Dlfcn {
                                         "stp x29, x30, [sp]",
                                         "svc #0x" + Integer.toHexString(svcNumber),
 
-                                        "ldr x7, [sp]",
+                                        "ldr x13, [sp]",
                                         "add sp, sp, #0x8",
-                                        "cmp x7, #0",
+                                        "cmp x13, #0",
                                         "b.eq #0x58",
                                         "ldr x0, [sp]",
                                         "add sp, sp, #0x8",
@@ -75,20 +74,20 @@ public class ArmLD64 extends Dlfcn {
                                         "add sp, sp, #0x8",
                                         "ldr x2, [sp]",
                                         "add sp, sp, #0x8",
-                                        "blr x7",
+                                        "blr x13",
                                         "cmp w0, #0",
                                         "b.eq #0xc",
 
-                                        "ldr x7, [sp]",
+                                        "ldr x13, [sp]",
                                         "add sp, sp, #0x8",
-                                        "cmp x7, #0",
+                                        "cmp x13, #0",
                                         "b.eq #0x58",
                                         "add sp, sp, #0x18",
                                         "b 0x40",
 
                                         "mov x8, #0",
-                                        "mov x4, #0x" + Integer.toHexString(svcNumber),
-                                        "mov x16, #0x" + Integer.toHexString(Svc.CALLBACK_SYSCALL_NUMBER),
+                                        "mov x12, #0x" + Integer.toHexString(svcNumber),
+                                        "mov x16, #0x" + Integer.toHexString(Svc.POST_CALLBACK_SYSCALL_NUMBER),
                                         "svc #0",
 
                                         "ldp x29, x30, [sp]",
@@ -122,7 +121,7 @@ public class ArmLD64 extends Dlfcn {
                                 }
                             }
                             Collections.reverse(list);
-                            final int size = UnidbgStructure.calculateSize(dl_phdr_info.class);
+                            final int size = UnidbgStructure.calculateSize(dl_phdr_info64.class);
                             block = emulator.getMemory().malloc(size * list.size(), true);
                             UnidbgPointer ptr = block.getPointer();
                             Backend backend = emulator.getBackend();
@@ -136,16 +135,17 @@ public class ArmLD64 extends Dlfcn {
                                 sp.setLong(0, 0); // NULL-terminated
 
                                 for (LinuxModule module : list) {
-                                    dl_phdr_info info = new dl_phdr_info(ptr);
-                                    info.dlpi_addr = UnidbgPointer.pointer(emulator, module.base);
-                                    assert info.dlpi_addr != null;
+                                    dl_phdr_info64 info = new dl_phdr_info64(ptr);
+                                    UnidbgPointer dlpi_addr = UnidbgPointer.pointer(emulator, module.base);
+                                    assert dlpi_addr != null;
+                                    info.dlpi_addr = dlpi_addr.peer;
                                     ElfDynamicStructure dynamicStructure = module.dynamicStructure;
                                     if (dynamicStructure != null && dynamicStructure.soName > 0 && dynamicStructure.dt_strtab_offset > 0) {
-                                        info.dlpi_name = info.dlpi_addr.share(dynamicStructure.dt_strtab_offset + dynamicStructure.soName);
+                                        info.dlpi_name = UnidbgPointer.nativeValue(dlpi_addr.share(dynamicStructure.dt_strtab_offset + dynamicStructure.soName));
                                     } else {
-                                        info.dlpi_name = module.createPathMemory(svcMemory);
+                                        info.dlpi_name = UnidbgPointer.nativeValue(module.createPathMemory(svcMemory));
                                     }
-                                    info.dlpi_phdr = info.dlpi_addr.share(module.elfFile.ph_offset);
+                                    info.dlpi_phdr = UnidbgPointer.nativeValue(dlpi_addr.share(module.elfFile.ph_offset));
                                     info.dlpi_phnum = module.elfFile.num_ph;
                                     info.pack();
 
@@ -170,8 +170,8 @@ public class ArmLD64 extends Dlfcn {
                             }
                         }
                         @Override
-                        public void handleCallback(Emulator<?> emulator) {
-                            super.handleCallback(emulator);
+                        public void handlePostCallback(Emulator<?> emulator) {
+                            super.handlePostCallback(emulator);
 
                             if (block == null) {
                                 throw new IllegalStateException();
@@ -208,12 +208,12 @@ public class ArmLD64 extends Dlfcn {
                             buffer.putInt(0xd10043ff); // "sub sp, sp, #0x10"
                             buffer.putInt(0xa9007bfd); // "stp x29, x30, [sp]"
                             buffer.putInt(Arm64Svc.assembleSvc(svcNumber)); // "svc #0x" + Integer.toHexString(svcNumber)
-                            buffer.putInt(0xf94003e7); // "ldr x7, [sp]"
+                            buffer.putInt(0xf94003ed); // "ldr x13, [sp]"
                             buffer.putInt(0x910023ff); // "add sp, sp, #0x8", manipulated stack in dlopen
-                            buffer.putInt(0xf10000ff); // "cmp x7, #0"
+                            buffer.putInt(0xf10001bf); // "cmp x13, #0"
                             buffer.putInt(0x54000060); // "b.eq #0x24"
-                            buffer.putInt(0x10ffff9e); // "adr lr, #-0xf", jump to ldr x7, [sp]
-                            buffer.putInt(0xd61f00e0); // "br x7", call init array
+                            buffer.putInt(0x10ffff9e); // "adr lr, #-0xf", jump to ldr x13, [sp]
+                            buffer.putInt(0xd61f01a0); // "br x13", call init array
                             buffer.putInt(0xf94003e0); // "ldr x0, [sp]", with return address
                             buffer.putInt(0x910023ff); // "add sp, sp, #0x8"
                             buffer.putInt(0xa9407bfd); // "ldp x29, x30, [sp]"
@@ -230,7 +230,7 @@ public class ArmLD64 extends Dlfcn {
                             Pointer filename = context.getPointerArg(0);
                             int flags = context.getIntArg(1);
                             if (log.isDebugEnabled()) {
-                                log.debug("dlopen filename=" + filename.getString(0) + ", flags=" + flags);
+                                log.debug("dlopen filename=" + filename.getString(0) + ", flags=" + flags + ", LR=" + context.getLRPointer());
                             }
                             return dlopen(emulator.getMemory(), filename.getString(0), emulator);
                         }
@@ -243,7 +243,7 @@ public class ArmLD64 extends Dlfcn {
                             long addr = context.getLongArg(0);
                             Pointer info = context.getPointerArg(1);
                             if (log.isDebugEnabled()) {
-                                log.debug("dladdr addr=0x" + Long.toHexString(addr) + ", info=" + info);
+                                log.debug("dladdr addr=0x" + Long.toHexString(addr) + ", info=" + info + ", LR=" + context.getLRPointer());
                             }
                             Module module = emulator.getMemory().findModuleByAddress(addr);
                             if (module == null) {
@@ -252,12 +252,12 @@ public class ArmLD64 extends Dlfcn {
 
                             Symbol symbol = module.findClosestSymbolByAddress(addr, true);
 
-                            DlInfo dlInfo = new DlInfo(info);
-                            dlInfo.dli_fname = module.createPathMemory(svcMemory);
-                            dlInfo.dli_fbase = UnidbgPointer.pointer(emulator, module.base);
+                            DlInfo64 dlInfo = new DlInfo64(info);
+                            dlInfo.dli_fname = UnidbgPointer.nativeValue(module.createPathMemory(svcMemory));
+                            dlInfo.dli_fbase = module.base;
                             if (symbol != null) {
-                                dlInfo.dli_sname = symbol.createNameMemory(svcMemory);
-                                dlInfo.dli_saddr = UnidbgPointer.pointer(emulator, symbol.getAddress());
+                                dlInfo.dli_sname = UnidbgPointer.nativeValue(symbol.createNameMemory(svcMemory));
+                                dlInfo.dli_saddr = symbol.getAddress();
                             }
                             dlInfo.pack();
                             return 1;
@@ -271,7 +271,7 @@ public class ArmLD64 extends Dlfcn {
                             long handle = context.getLongArg(0);
                             Pointer symbol = context.getPointerArg(1);
                             if (log.isDebugEnabled()) {
-                                log.debug("dlsym handle=0x" + Long.toHexString(handle) + ", symbol=" + symbol.getString(0));
+                                log.debug("dlsym handle=0x" + Long.toHexString(handle) + ", symbol=" + symbol.getString(0) + ", LR=" + context.getLRPointer());
                             }
                             return dlsym(emulator, handle, symbol.getString(0));
                         }
@@ -293,14 +293,14 @@ public class ArmLD64 extends Dlfcn {
     }
 
     private long dlopen(Memory memory, String filename, Emulator<?> emulator) {
-        Pointer pointer = UnidbgPointer.register(emulator, Arm64Const.UC_ARM64_REG_SP);
+        UnidbgPointer pointer = UnidbgPointer.register(emulator, Arm64Const.UC_ARM64_REG_SP);
         try {
             Module module = memory.dlopen(filename, false);
-            pointer = pointer.share(-8); // return value
+            pointer = pointer.share(-8, 0); // return value
             if (module == null) {
                 pointer.setLong(0, 0);
 
-                pointer = pointer.share(-8); // NULL-terminated
+                pointer = pointer.share(-8, 0); // NULL-terminated
                 pointer.setLong(0, 0);
 
                 if (!"libnetd_client.so".equals(filename)) {
@@ -313,14 +313,11 @@ public class ArmLD64 extends Dlfcn {
             } else {
                 pointer.setLong(0, module.base);
 
-                pointer = pointer.share(-8); // NULL-terminated
+                pointer = pointer.share(-8, 0); // NULL-terminated
                 pointer.setLong(0, 0);
 
-                for (Module md : memory.getLoadedModules()) {
-                    LinuxModule m = (LinuxModule) md;
-                    if (!m.getUnresolvedSymbol().isEmpty()) {
-                        continue;
-                    }
+                LinuxModule m = (LinuxModule) module;
+                if (m.getUnresolvedSymbol().isEmpty()) {
                     for (InitFunction initFunction : m.initFunctionList) {
                         long address = initFunction.getAddress();
                         if (address == 0) {
@@ -329,7 +326,7 @@ public class ArmLD64 extends Dlfcn {
                         if (log.isDebugEnabled()) {
                             log.debug("[" + m.name + "]PushInitFunction: 0x" + Long.toHexString(address));
                         }
-                        pointer = pointer.share(-8); // init array
+                        pointer = pointer.share(-8, 0); // init array
                         pointer.setLong(0, address);
                     }
                     m.initFunctionList.clear();
@@ -338,7 +335,7 @@ public class ArmLD64 extends Dlfcn {
                 return module.base;
             }
         } finally {
-            backend.reg_write(Arm64Const.UC_ARM64_REG_SP, ((UnidbgPointer) pointer).peer);
+            backend.reg_write(Arm64Const.UC_ARM64_REG_SP, pointer.peer);
         }
     }
 

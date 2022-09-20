@@ -4,6 +4,7 @@ import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.backend.DynarmicBackend;
+import com.github.unidbg.debugger.MmapInfo;
 import keystone.Keystone;
 import keystone.KeystoneArchitecture;
 import keystone.KeystoneEncoded;
@@ -12,22 +13,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.Arm64Const;
 
+import java.util.List;
+
 public class DynarmicBackend64 extends DynarmicBackend {
 
     private static final Log log = LogFactory.getLog(DynarmicBackend64.class);
 
     public DynarmicBackend64(Emulator<?> emulator, Dynarmic dynarmic) {
         super(emulator, dynarmic);
-    }
-
-    @Override
-    public boolean handleInterpreterFallback(long pc, int num_instructions) {
-        try {
-            emulator.attach().debug();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Override
@@ -78,7 +71,7 @@ public class DynarmicBackend64 extends DynarmicBackend {
                     return dynarmic.reg_read64(regId - Arm64Const.UC_ARM64_REG_X0);
                 case Arm64Const.UC_ARM64_REG_SP:
                     return dynarmic.reg_read_sp64();
-                case Arm64Const.UC_ARM64_REG_FP:
+                case Arm64Const.UC_ARM64_REG_X29:
                     return dynarmic.reg_read64(29);
                 case Arm64Const.UC_ARM64_REG_LR:
                     return dynarmic.reg_read64(30);
@@ -132,6 +125,9 @@ public class DynarmicBackend64 extends DynarmicBackend {
                 case Arm64Const.UC_ARM64_REG_SP:
                     dynarmic.reg_set_sp64(value.longValue());
                     break;
+                case Arm64Const.UC_ARM64_REG_X29:
+                    dynarmic.reg_write64(29, value.longValue());
+                    break;
                 case Arm64Const.UC_ARM64_REG_LR:
                     dynarmic.reg_write64(30, value.longValue());
                     break;
@@ -150,6 +146,11 @@ public class DynarmicBackend64 extends DynarmicBackend {
         } catch (DynarmicException e) {
             throw new BackendException(e);
         }
+    }
+
+    @Override
+    public List<MmapInfo> mem_maplist() {
+        return null;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.backend.DebugHook;
 import com.github.unidbg.arm.backend.KvmBackend;
+import com.github.unidbg.debugger.MmapInfo;
 import com.github.unidbg.pointer.UnidbgPointer;
 import keystone.Keystone;
 import keystone.KeystoneArchitecture;
@@ -17,6 +18,7 @@ import unicorn.UnicornConst;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.List;
 
 public class KvmBackend32 extends KvmBackend {
 
@@ -165,6 +167,11 @@ public class KvmBackend32 extends KvmBackend {
         } catch (KvmException e) {
             throw new BackendException(e);
         }
+    }
+
+    @Override
+    public List<MmapInfo> mem_maplist() {
+        return null;
     }
 
     @Override

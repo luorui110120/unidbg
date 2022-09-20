@@ -4,10 +4,15 @@ import com.alibaba.fastjson.util.IOUtils;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.AbstractARMDebugger;
 import com.github.unidbg.utils.Inspector;
+import com.github.unidbg.utils.KdUtils;
+import com.github.unidbg.utils.SnapShotUtils;
 import keystone.Keystone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -46,6 +51,8 @@ public abstract class AbstractDebugServer extends AbstractARMDebugger implements
 
     private boolean serverShutdown, closeConnection;
     private boolean serverRunning;
+
+    public int processExitStatus = 0;
 
     protected final boolean isDebuggerConnected() {
         return socketChannel != null;
@@ -124,7 +131,9 @@ public abstract class AbstractDebugServer extends AbstractARMDebugger implements
         com.alibaba.fastjson.util.IOUtils.close(selector);
         selector = null;
         closeSocketChannel();
+
         resumeRun();
+
     }
 
     protected abstract void onServerStart();
@@ -241,6 +250,40 @@ public abstract class AbstractDebugServer extends AbstractARMDebugger implements
 
         onHitBreakPoint(emulator, address);
         semaphore.acquire();
+        if(processExitStatus > 0){
+            int n = JOptionPane.showConfirmDialog(null, "是否需要保存快照方便下次分析!!", "快照",JOptionPane.YES_NO_OPTION); //返回值为0或1
+            if(n == JOptionPane.YES_OPTION){
+                FileNameExtensionFilter filter=new FileNameExtensionFilter("*.zip","zip");
+
+                //默认目录
+                String defaultDirectory = KdUtils.getJarDirPath();
+                //默认文件名
+                String defaultFilename = "idaDebugSnapShot.zip";
+                JFileChooser jfileChooser = new JFileChooser();
+
+                //设置默认目录
+                jfileChooser.setCurrentDirectory(new File(defaultDirectory));
+
+                //设置默认文件名
+                jfileChooser.setSelectedFile(new File(defaultFilename));
+
+                jfileChooser.setMultiSelectionEnabled(false);
+
+                jfileChooser.setFileFilter(filter);
+
+
+                int value = jfileChooser.showSaveDialog(null);
+                //判断是否点击了打开
+                if(value == JFileChooser.APPROVE_OPTION) {
+                    String path = jfileChooser.getSelectedFile().getPath();
+                    SnapShotUtils.saveSnapShot(path, emulator);
+                    System.out.println("保存成功,即将退出进程; path:" + path);
+                }
+
+            }
+
+            System.exit(processExitStatus);
+        }
     }
 
     @Override

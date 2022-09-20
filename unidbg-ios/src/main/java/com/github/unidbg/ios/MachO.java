@@ -20,6 +20,7 @@ public interface MachO {
     int N_TYPE = 0x0e;
     int N_STAB = 0xe0;
     int N_UNDF = 0; /* undefined, n_sect == NO_SECT */
+    int N_EXT = 0x1; /* external symbol bit, set for external symbols */
     int N_ABS = 0x2; /* absolute, n_sect == NO_SECT */
     int N_SECT = 0xe; /* defined in section number n_sect */
     int N_INDR = 0xa; /* indirect */
@@ -73,9 +74,6 @@ public interface MachO {
     int BIND_TYPE_TEXT_ABSOLUTE32 = 2;
     int BIND_TYPE_TEXT_PCREL32 = 3;
 
-    int RTLD_DEFAULT = -2;
-    int RTLD_MAIN_ONLY = -5;
-
     int _IONBF = 2; /* setvbuf should set unbuffered */
 
     int MAP_FILE = 0x0000; /* map from file (default) */
@@ -98,8 +96,11 @@ public interface MachO {
 
     int F_GETPATH = 50; /* return the full path of the fd */
 
-    int BIND_SPECIAL_DYLIB_SELF = 0;
-    int BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE = -1;
-    int BIND_SPECIAL_DYLIB_FLAT_LOOKUP = -2;
+    byte BIND_SPECIAL_DYLIB_SELF = 0;
+    byte BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE = -1;
+    byte BIND_SPECIAL_DYLIB_FLAT_LOOKUP = -2;
+    byte BIND_SPECIAL_DYLIB_WEAK_LOOKUP = -3;
+
+    int MH_WEAK_DEFINES = 0x8000; /* the final linked image contains external weak symbols */
 
 }

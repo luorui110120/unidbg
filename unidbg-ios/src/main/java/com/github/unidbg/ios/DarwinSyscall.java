@@ -53,6 +53,7 @@ public interface DarwinSyscall {
     int HW_CPU_TYPE = 105;
     int HW_CPU_SUBTYPE = 106;
     int HW_CPU_FAMILY = 108;
+    int HW_CPU_MAX = 0x8000;
 
     int KERN_PROC_PID = 1; /* by process id */
 
@@ -61,5 +62,14 @@ public interface DarwinSyscall {
 
     int CPU_TYPE_ARM64 = 0x100000c;
     int CPU_SUBTYPE_ARM64_ALL = 0;
+
+    int STATIC_PORT = 0x88;
+
+    int ETIMEDOUT = 60; /* Operation timed out */
+
+    long nanoTime = System.nanoTime();
+    int CLOCK_REALTIME = 0;
+    int CLOCK_MONOTONIC_RAW = 4;
+    int CLOCK_MONOTONIC = 6;
 
 }

@@ -38,6 +38,11 @@ public class IpaLibraryFile implements LibraryFile {
     }
 
     @Override
+    public long getFileSize() {
+        return data.length;
+    }
+
+    @Override
     public String getName() {
         return executable;
     }
@@ -58,14 +63,18 @@ public class IpaLibraryFile implements LibraryFile {
             log.debug("Try resolve library soName=" + soName + ", path=" + path);
         }
         if (path.contains("@")) {
-            log.warn("Try resolve library soName=" + soName + ", path=" + path);
+            log.warn("Try resolve library soName=" + soName + ", path=" + path, new Exception());
             return null;
         }
         if (!loadList.isEmpty() && !loadList.contains(FilenameUtils.getName(path))) {
             return null;
         }
         byte[] libData = IpaLoader.loadZip(ipa, path);
-        return libData == null ? null : new IpaLibraryFile(appDir, ipa, soName, bundleAppDir, libData, loadList);
+        if (libData != null) {
+            return new IpaLibraryFile(appDir, ipa, soName, bundleAppDir, libData, loadList);
+        } else {
+            return null;
+        }
     }
 
     @Override

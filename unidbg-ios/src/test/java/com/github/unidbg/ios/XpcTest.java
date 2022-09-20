@@ -6,6 +6,7 @@ import com.github.unidbg.Module;
 import com.github.unidbg.Symbol;
 import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.arm.HookStatus;
+import com.github.unidbg.arm.backend.Unicorn2Factory;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.file.ios.DarwinFileIO;
 import com.github.unidbg.hook.ReplaceCallback;
@@ -27,7 +28,9 @@ public class XpcTest extends EmulatorTest<ARMEmulator<DarwinFileIO>> {
 
     @Override
     protected ARMEmulator<DarwinFileIO> createARMEmulator() {
-        return DarwinEmulatorBuilder.for32Bit().build();
+        return DarwinEmulatorBuilder.for32Bit()
+                .addBackendFactory(new Unicorn2Factory(true))
+                .build();
     }
 
     private void processXpcNoPie() {
@@ -56,7 +59,7 @@ public class XpcTest extends EmulatorTest<ARMEmulator<DarwinFileIO>> {
         Module module = emulator.loadLibrary(new File("unidbg-ios/src/test/resources/example_binaries/xpc"));
 
         Symbol malloc_default_zone = module.findSymbolByName("_malloc_default_zone");
-        Pointer zone = UnidbgPointer.pointer(emulator, malloc_default_zone.call(emulator)[0].intValue());
+        Pointer zone = UnidbgPointer.pointer(emulator, malloc_default_zone.call(emulator).intValue());
         assertNotNull(zone);
         System.err.println("_malloc_default_zone zone=" + zone);
 

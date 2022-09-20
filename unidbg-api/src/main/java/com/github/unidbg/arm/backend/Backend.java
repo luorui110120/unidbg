@@ -2,7 +2,10 @@ package com.github.unidbg.arm.backend;
 
 import com.github.unidbg.debugger.BreakPoint;
 import com.github.unidbg.debugger.BreakPointCallback;
+import com.github.unidbg.debugger.MmapInfo;
 import unicorn.Unicorn;
+
+import java.util.List;
 
 public interface Backend {
 
@@ -23,6 +26,8 @@ public interface Backend {
     void mem_write(long address, byte[] bytes) throws BackendException;
 
     void mem_map(long address, long size, int perms) throws BackendException;
+
+    List<MmapInfo> mem_maplist();
 
     void mem_protect(long address, long size, int perms) throws BackendException;
 
@@ -56,7 +61,10 @@ public interface Backend {
     void context_restore(long context);
     void context_save(long context);
     long context_alloc();
+    void context_free(long context);
 
     int getPageSize();
+
+    void registerEmuCountHook(long emu_count);
 
 }

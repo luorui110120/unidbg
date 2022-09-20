@@ -19,12 +19,16 @@ public class ExportSymbol extends Symbol implements MachO {
         this.flags = flags;
     }
 
+    public boolean isReExport() {
+        return (flags & EXPORT_SYMBOL_FLAGS_REEXPORT) != 0;
+    }
+
     public long getOtherWithBase() {
         return module.base + other;
     }
 
     @Override
-    public Number[] call(Emulator<?> emulator, Object... args) {
+    public Number call(Emulator<?> emulator, Object... args) {
         return module.callFunction(emulator, getValue(), args);
     }
 
@@ -65,4 +69,9 @@ public class ExportSymbol extends Symbol implements MachO {
     public String getModuleName() {
         return module.name;
     }
+
+    public long getOther() {
+        return other;
+    }
+
 }

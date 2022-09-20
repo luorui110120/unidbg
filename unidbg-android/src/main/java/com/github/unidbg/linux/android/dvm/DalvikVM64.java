@@ -1,5 +1,6 @@
 package com.github.unidbg.linux.android.dvm;
 
+import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.Arm64Svc;
 import com.github.unidbg.arm.backend.BackendException;
@@ -35,7 +36,7 @@ public class DalvikVM64 extends BaseVM implements VM {
     private final UnidbgPointer _JavaVM;
     private final UnidbgPointer _JNIEnv;
 
-    public DalvikVM64(Emulator<?> emulator, File apkFile) {
+    public DalvikVM64(AndroidEmulator emulator, File apkFile) {
         super(emulator, apkFile);
 
         final SvcMemory svcMemory = emulator.getSvcMemory();
@@ -194,10 +195,11 @@ public class DalvikVM64 extends BaseVM implements VM {
         Pointer _ExceptionOccurred = svcMemory.registerSvc(new Arm64Svc() {
             @Override
             public long handle(Emulator<?> emulator) {
+                long exception = throwable == null ? JNI_NULL : (throwable.hashCode() & 0xffffffffL);
                 if (log.isDebugEnabled()) {
-                    log.debug("ExceptionOccurred");
+                    log.debug("ExceptionOccurred: 0x" + Long.toHexString(exception));
                 }
-                return throwable == null ? JNI_NULL : (throwable.hashCode() & 0xffffffffL);
+                return exception;
             }
         });
 
@@ -1513,7 +1515,7 @@ public class DalvikVM64 extends BaseVM implements VM {
                 if (dvmField == null) {
                     throw new BackendException();
                 } else {
-                    DvmObject<?> obj = getObject(value.toIntPeer());
+                    DvmObject<?> obj = value == null ? null : getObject(value.toIntPeer());
                     dvmField.setObjectField(dvmObject, obj);
                     if (verbose) {
                         System.out.printf("JNIEnv->SetObjectField(%s, %s %s => %s) was called from %s%n", dvmObject, dvmField.fieldName, dvmField.fieldType, obj, context.getLRPointer());
@@ -2810,6 +2812,9 @@ public class DalvikVM64 extends BaseVM implements VM {
                 if (log.isDebugEnabled()) {
                     log.debug("GetStringUTFChars string=" + string + ", isCopy=" + isCopy + ", value=" + value + ", lr=" + context.getLRPointer());
                 }
+                if (verbose) {
+                    System.out.printf("JNIEnv->GetStringUTFChars(\"%s\") was called from %s%n", string, context.getLRPointer());
+                }
                 byte[] data = Arrays.copyOf(bytes, bytes.length + 1);
                 UnidbgPointer pointer = string.allocateMemoryBlock(emulator, data.length);
                 pointer.write(0, data, 0, data.length);
@@ -3406,8 +3411,16 @@ public class DalvikVM64 extends BaseVM implements VM {
                 if (object == null) {
                     return JNIInvalidRefType;
                 }
-                ObjRef dvmGlobalObject = globalObjectMap.get(object.toIntPeer());
+                int hash = object.toIntPeer();
                 ObjRef dvmLocalObject = localObjectMap.get(object.toIntPeer());
+                ObjRef dvmGlobalObject;
+                if (globalObjectMap.containsKey(hash)) {
+                    dvmGlobalObject = globalObjectMap.get(hash);
+                } else if (weakGlobalObjectMap.containsKey(hash)) {
+                    dvmGlobalObject = weakGlobalObjectMap.get(hash);
+                } else {
+                    dvmGlobalObject = null;
+                }
                 if (log.isDebugEnabled()) {
                     log.debug("GetObjectRefType object=" + object + ", dvmGlobalObject=" + dvmGlobalObject + ", dvmLocalObject=" + dvmLocalObject);
                 }

@@ -4,17 +4,20 @@ import com.alibaba.fastjson.util.IOUtils;
 import com.github.unidbg.arm.backend.Backend;
 import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.backend.ReadHook;
+import com.github.unidbg.arm.backend.UnHook;
 import com.github.unidbg.arm.backend.WriteHook;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.listener.TraceReadListener;
 import com.github.unidbg.listener.TraceWriteListener;
 import com.github.unidbg.pointer.UnidbgPointer;
 import org.apache.commons.codec.binary.Hex;
-import unicorn.Unicorn;
 
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * trace memory read
@@ -24,6 +27,7 @@ import java.nio.ByteOrder;
 public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
 
     private final boolean read;
+    private final DateFormat dateFormat = new SimpleDateFormat("[HH:mm:ss SSS]");
 
     public TraceMemoryHook(boolean read) {
         this.read = read;
@@ -33,10 +37,10 @@ public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
     TraceReadListener traceReadListener;
     TraceWriteListener traceWriteListener;
 
-    private Unicorn.UnHook unHook;
+    private UnHook unHook;
 
     @Override
-    public void onAttach(Unicorn.UnHook unHook) {
+    public void onAttach(UnHook unHook) {
         if (this.unHook != null) {
             throw new IllegalStateException();
         }
@@ -70,9 +74,11 @@ public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
         }
 
         try {
-            byte[] data = backend.mem_read(address, size);
+            byte[] data = size == 0 ? new byte[0] : backend.mem_read(address, size);
             String value;
-            if (data.length == 4) {
+            if (data.length == 2) {
+                value = "0x" + Long.toHexString(ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffffL);
+            } else if (data.length == 4) {
                 value = "0x" + Long.toHexString(ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getInt() & 0xffffffffL);
             } else if (data.length == 8) {
                 value = "0x" + Long.toHexString(ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).getLong());
@@ -81,7 +87,7 @@ public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
             }
             Emulator<?> emulator = (Emulator<?>) user;
             if (traceReadListener == null || traceReadListener.onRead(emulator, address, data, value)) {
-                printMsg("### Memory READ at 0x", emulator, address, size, value);
+                printMsg(dateFormat.format(new Date()) + " Memory READ at 0x", emulator, address, size, value);
             }
         } catch (BackendException e) {
             throw new IllegalStateException(e);
@@ -96,10 +102,13 @@ public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
         if (redirect != null) {
             out = redirect;
         }
-        String sb = type + Long.toHexString(address) + ", data size = " + size + ", data value = " + value +
-                " pc=" + pc +
-                " lr=" + lr;
-        out.println(sb);
+        StringBuilder builder = new StringBuilder();
+        builder.append(type).append(Long.toHexString(address));
+        if (size > 0) {
+            builder.append(", data size = ").append(size).append(", data value = ").append(value);
+        }
+        builder.append(", PC=").append(pc).append(", LR=").append(lr);
+        out.println(builder);
     }
 
     @Override
@@ -111,7 +120,7 @@ public class TraceMemoryHook implements ReadHook, WriteHook, TraceHook {
         try {
             Emulator<?> emulator = (Emulator<?>) user;
             if (traceWriteListener == null || traceWriteListener.onWrite(emulator, address, size, value)) {
-                printMsg("### Memory WRITE at 0x", emulator, address, size, "0x" + Long.toHexString(value));
+                printMsg(dateFormat.format(new Date()) + " Memory WRITE at 0x", emulator, address, size, "0x" + Long.toHexString(value));
             }
         } catch (BackendException e) {
             throw new IllegalStateException(e);

@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 
 /**
  * An ELF (Executable and Linkable Format) file can be a relocatable, executable, shared or core file.
- * 
+ *
  * <pre>
- * http://man7.org/linux/man-pages/man5/elf.5.html
- * http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
- * http://www.ibm.com/developerworks/library/l-dynamic-libraries/
- * http://downloads.openwatcom.org/ftp/devel/docs/elf-64-gen.pdf
- * 
+ * <a href="http://man7.org/linux/man-pages/man5/elf.5.html">man7</a>
+ * <a href="http://en.wikipedia.org/wiki/Executable_and_Linkable_Format">wikipedia</a>
+ * <a href="http://www.ibm.com/developerworks/library/l-dynamic-libraries/">ibm</a>
+ * <a href="http://downloads.openwatcom.org/ftp/devel/docs/elf-64-gen.pdf">openwatcom</a>
+ *
  * Elf64_Addr, Elf64_Off, Elf64_Xword, Elf64_Sxword: 8 bytes
  * Elf64_Word, Elf64_Sword: 4 bytes
  * Elf64_Half: 2 bytes
@@ -255,7 +255,7 @@ public final class ElfFile {
 		return programHeaders[index].getValue();
 	}
 
-	public static ElfFile fromBytes(ByteBuffer buffer) throws ElfException {
+	public static ElfFile fromBuffer(ByteBuffer buffer) throws ElfException {
 		return new ElfFile(buffer);
 	}
 
@@ -308,7 +308,7 @@ public final class ElfFile {
 			sectionHeaders[i] = new MemoizedObject<ElfSection>() {
 				@Override
 				public ElfSection computeValue() throws ElfException {
-					return new ElfSection(parser, sectionHeaderOffset);
+					return new ElfSection(ElfFile.this, parser, sectionHeaderOffset);
 				}
 			};
 		}
@@ -319,7 +319,7 @@ public final class ElfFile {
 			programHeaders[i] = new MemoizedObject<ElfSegment>() {
 				@Override
 				public ElfSegment computeValue() {
-					return new ElfSegment(parser, programHeaderOffset);
+					return new ElfSegment(ElfFile.this, parser, programHeaderOffset);
 				}
 			};
 		}
@@ -332,6 +332,24 @@ public final class ElfFile {
 			if (ph.type == ElfSegment.PT_INTERP) return ph.getInterpreter();
 		}
 		return null;
+	}
+
+	/**
+	 * Find the file offset from a virtual address by looking up the {@link ElfSegment} segment containing the
+	 * address and computing the resulting file offset.
+	 */
+	public long virtualMemoryAddrToFileOffset(long address) throws IOException {
+		for (int i = 0; i < this.num_ph; i++) {
+			ElfSegment ph = this.getProgramHeader(i);
+			if (address >= ph.virtual_address && address < (ph.virtual_address + ph.mem_size)) {
+				long relativeOffset = address - ph.virtual_address;
+				if (relativeOffset >= ph.file_size) {
+					throw new ElfException("Can not convert virtual memory address " + Long.toHexString(address) + " to file offset -" + " found segment " + ph + " but address maps to memory outside file range");
+				}
+				return ph.offset + relativeOffset;
+			}
+		}
+		throw new ElfException("Cannot find segment for address 0x" + Long.toHexString(address));
 	}
 
 }

@@ -7,6 +7,7 @@ import com.github.unidbg.file.UnidbgFileFilter;
 import com.github.unidbg.ios.file.DirectoryFileIO;
 import com.github.unidbg.ios.struct.attr.AttrList;
 import com.github.unidbg.ios.struct.attr.AttrReference;
+import com.github.unidbg.ios.struct.attr.AttributeSet;
 import com.github.unidbg.ios.struct.attr.Dev;
 import com.github.unidbg.ios.struct.attr.FinderInfo;
 import com.github.unidbg.ios.struct.attr.Fsid;
@@ -16,7 +17,7 @@ import com.github.unidbg.ios.struct.attr.UserAccess;
 import com.github.unidbg.ios.struct.kernel.StatFS;
 import com.github.unidbg.pointer.UnidbgStructure;
 import com.github.unidbg.unix.UnixEmulator;
-import com.github.unidbg.unix.struct.TimeSpec;
+import com.github.unidbg.unix.struct.TimeSpec32;
 import com.sun.jna.Pointer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -64,6 +65,12 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
         if (cmd == F_NOCACHE) {
             return 0;
         }
+        if (cmd == F_SETLK) {
+            return 0;
+        }
+        if (cmd == F_SETLKW) {
+            return 0;
+        }
         if (cmd == F_SETPROTECTIONCLASS) {
             protectionClass = (int) arg;
             return 0;
@@ -76,7 +83,7 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
     }
 
     public int fstatfs(StatFS statFS) {
-        throw new UnsupportedOperationException(getClass().getName());
+        throw new UnsupportedOperationException(getClass().getName() + " path=" + getPath());
     }
 
     @Override
@@ -84,71 +91,105 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
         if (attrList.bitmapcount != ATTR_BIT_MAP_COUNT) {
             throw new UnsupportedOperationException("bitmapcount=" + attrList.bitmapcount);
         }
+        AttributeSet attributeSet = attrList.attributeSet;
         Pointer pointer = attrBuf.share(4);
         List<UnidbgStructure> list = new ArrayList<>();
         List<AttrReference> attrReferenceList = new ArrayList<>();
-        if((attrList.commonattr & ATTR_CMN_NAME) != 0) {
+        AttributeSet returnedAttributeSet = null;
+        if ((attributeSet.commonattr & ATTR_CMN_RETURNED_ATTRS) != 0) {
+            returnedAttributeSet = new AttributeSet(pointer);
+            pointer = pointer.share(returnedAttributeSet.size());
+            list.add(returnedAttributeSet);
+            attributeSet.commonattr &= ~ATTR_CMN_RETURNED_ATTRS;
+        }
+        if((attributeSet.commonattr & ATTR_CMN_NAME) != 0) {
             String name = FilenameUtils.getName(getPath());
             byte[] bytes = name.getBytes(StandardCharsets.UTF_8);
             AttrReference attrReference = new AttrReference(pointer, bytes);
             attrReferenceList.add(attrReference);
             pointer = pointer.share(attrReference.size());
             list.add(attrReference);
-            attrList.commonattr &= ~ATTR_CMN_NAME;
+            attributeSet.commonattr &= ~ATTR_CMN_NAME;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_NAME;
+            }
         }
-        if((attrList.commonattr & ATTR_CMN_DEVID) != 0) {
+        if((attributeSet.commonattr & ATTR_CMN_DEVID) != 0) {
             Dev dev = new Dev(pointer);
             dev.dev = 1;
             pointer = pointer.share(dev.size());
             list.add(dev);
-            attrList.commonattr &= ~ATTR_CMN_DEVID;
+            attributeSet.commonattr &= ~ATTR_CMN_DEVID;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_DEVID;
+            }
         }
-        if((attrList.commonattr & ATTR_CMN_FSID) != 0) {
+        if((attributeSet.commonattr & ATTR_CMN_FSID) != 0) {
             Fsid fsid = new Fsid(pointer);
             fsid.val[0] = 0;
             fsid.val[1] = 0;
             pointer = pointer.share(fsid.size());
             list.add(fsid);
-            attrList.commonattr &= ~ATTR_CMN_FSID;
+            attributeSet.commonattr &= ~ATTR_CMN_FSID;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_FSID;
+            }
         }
-        if((attrList.commonattr & ATTR_CMN_OBJTYPE) != 0) {
+        if((attributeSet.commonattr & ATTR_CMN_OBJTYPE) != 0) {
             ObjType objType = new ObjType(pointer);
             objType.type = this instanceof DirectoryFileIO ? vtype.VDIR.ordinal() : vtype.VREG.ordinal();
             pointer = pointer.share(objType.size());
             list.add(objType);
-            attrList.commonattr &= ~ATTR_CMN_OBJTYPE;
+            attributeSet.commonattr &= ~ATTR_CMN_OBJTYPE;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_OBJTYPE;
+            }
         }
-        if((attrList.commonattr & ATTR_CMN_OBJID) != 0) {
+        if((attributeSet.commonattr & ATTR_CMN_OBJID) != 0) {
             ObjId objId = new ObjId(pointer);
             objId.fid_objno = 0;
             objId.fid_generation = 0;
             pointer = pointer.share(objId.size());
             list.add(objId);
-            attrList.commonattr &= ~ATTR_CMN_OBJID;
+            attributeSet.commonattr &= ~ATTR_CMN_OBJID;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_OBJID;
+            }
         }
-        if((attrList.commonattr & ATTR_CMN_CRTIME) != 0) {
-            TimeSpec timeSpec = new TimeSpec(pointer);
+        if((attributeSet.commonattr & ATTR_CMN_CRTIME) != 0) {
+            TimeSpec32 timeSpec = new TimeSpec32(pointer);
             pointer = pointer.share(timeSpec.size());
             list.add(timeSpec);
-            attrList.commonattr &= ~ATTR_CMN_CRTIME;
+            attributeSet.commonattr &= ~ATTR_CMN_CRTIME;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_CRTIME;
+            }
         }
-        if ((attrList.commonattr & ATTR_CMN_FNDRINFO) != 0) {
+        if ((attributeSet.commonattr & ATTR_CMN_FNDRINFO) != 0) {
             FinderInfo finderInfo = new FinderInfo(pointer);
             pointer = pointer.share(finderInfo.size());
             list.add(finderInfo);
-            attrList.commonattr &= ~ATTR_CMN_FNDRINFO;
+            attributeSet.commonattr &= ~ATTR_CMN_FNDRINFO;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_FNDRINFO;
+            }
         }
-        if ((attrList.commonattr & ATTR_CMN_USERACCESS) != 0) {
+        if ((attributeSet.commonattr & ATTR_CMN_USERACCESS) != 0) {
             UserAccess userAccess = new UserAccess(pointer);
             userAccess.mode = X_OK | W_OK | R_OK;
 //            pointer = pointer.share(userAccess.size());
             list.add(userAccess);
-            attrList.commonattr &= ~ATTR_CMN_USERACCESS;
+            attributeSet.commonattr &= ~ATTR_CMN_USERACCESS;
+            if (returnedAttributeSet != null) {
+                returnedAttributeSet.commonattr |= ATTR_CMN_USERACCESS;
+            }
         }
-        if (attrList.commonattr != 0 || attrList.volattr != 0 ||
-                attrList.dirattr != 0 || attrList.fileattr != 0 ||
-                attrList.forkattr != 0) {
-            return -1;
+        if (attributeSet.commonattr != 0 || attributeSet.volattr != 0 ||
+                attributeSet.dirattr != 0 || attributeSet.fileattr != 0 ||
+                attributeSet.forkattr != 0) {
+            if (returnedAttributeSet == null) {
+                return -1;
+            }
         }
         int len = 0;
         for (UnidbgStructure structure : list) {
@@ -175,26 +216,35 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
         if (attrList.bitmapcount != ATTR_BIT_MAP_COUNT) {
             throw new UnsupportedOperationException("bitmapcount=" + attrList.bitmapcount);
         }
+        AttributeSet attributeSet = attrList.attributeSet;
         Pointer pointer = attrBuf.share(4);
-        if((attrList.commonattr & ATTR_CMN_CRTIME) != 0) {
-            TimeSpec timeSpec = new TimeSpec(pointer);
+        if((attributeSet.commonattr & ATTR_CMN_CRTIME) != 0) {
+            TimeSpec32 timeSpec = new TimeSpec32(pointer);
             pointer = pointer.share(timeSpec.size());
             if (log.isDebugEnabled()) {
                 log.debug("setattrlist timeSpec=" + timeSpec + ", pointer=" + pointer);
             }
-            attrList.commonattr &= ~ATTR_CMN_CRTIME;
+            attributeSet.commonattr &= ~ATTR_CMN_CRTIME;
         }
-        if ((attrList.commonattr & ATTR_CMN_FNDRINFO) != 0) {
+        if((attributeSet.commonattr & ATTR_CMN_MODTIME) != 0) {
+            TimeSpec32 timeSpec = new TimeSpec32(pointer);
+            pointer = pointer.share(timeSpec.size());
+            if (log.isDebugEnabled()) {
+                log.debug("setattrlist timeSpec=" + timeSpec + ", pointer=" + pointer);
+            }
+            attributeSet.commonattr &= ~ATTR_CMN_MODTIME;
+        }
+        if ((attributeSet.commonattr & ATTR_CMN_FNDRINFO) != 0) {
             FinderInfo finderInfo = new FinderInfo(pointer);
             pointer = pointer.share(finderInfo.size());
             if (log.isDebugEnabled()) {
                 log.debug("setattrlist finderInfo=" + finderInfo + ", pointer=" + pointer);
             }
-            attrList.commonattr &= ~ATTR_CMN_FNDRINFO;
+            attributeSet.commonattr &= ~ATTR_CMN_FNDRINFO;
         }
-        if (attrList.commonattr != 0 || attrList.volattr != 0 ||
-                attrList.dirattr != 0 || attrList.fileattr != 0 ||
-                attrList.forkattr != 0) {
+        if (attributeSet.commonattr != 0 || attributeSet.volattr != 0 ||
+                attributeSet.dirattr != 0 || attributeSet.fileattr != 0 ||
+                attributeSet.forkattr != 0) {
             return -1;
         }
         return 0;
@@ -207,6 +257,11 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
 
     @Override
     public int listxattr(Pointer namebuf, int size, int options) {
+        throw new UnsupportedOperationException(getClass().getName());
+    }
+
+    @Override
+    public int removexattr(String name) {
         throw new UnsupportedOperationException(getClass().getName());
     }
 
@@ -345,6 +400,24 @@ public abstract class BaseDarwinFileIO extends BaseFileIO implements DarwinFileI
                 attr.xattr = new HashMap<>();
             }
             attr.xattr.put(name, data);
+            File file = createAttrFile(dest);
+            FileUtils.writeStringToFile(file, JSON.toJSONString(attr), StandardCharsets.UTF_8);
+            return 0;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    protected final int removexattr(File dest, String name) {
+        try {
+            DarwinFileAttr attr = loadAttr(dest);
+            if (attr == null) {
+                attr = new DarwinFileAttr();
+            }
+            if (attr.xattr == null) {
+                attr.xattr = new HashMap<>();
+            }
+            attr.xattr.remove(name);
             File file = createAttrFile(dest);
             FileUtils.writeStringToFile(file, JSON.toJSONString(attr), StandardCharsets.UTF_8);
             return 0;

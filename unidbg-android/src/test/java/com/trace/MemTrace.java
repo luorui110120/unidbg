@@ -2,10 +2,7 @@ package com.trace;
 
 
 import com.github.unidbg.Emulator;
-import com.github.unidbg.arm.backend.Backend;
-import com.github.unidbg.arm.backend.BackendException;
-import com.github.unidbg.arm.backend.ReadHook;
-import com.github.unidbg.arm.backend.WriteHook;
+import com.github.unidbg.arm.backend.*;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.listener.TraceReadListener;
 import com.github.unidbg.listener.TraceWriteListener;
@@ -90,8 +87,9 @@ public class MemTrace implements ReadHook, WriteHook {
         }
     }
 
+
     @Override
-    public void onAttach(Unicorn.UnHook unHook) {
+    public void onAttach(UnHook unHook) {
 
     }
 

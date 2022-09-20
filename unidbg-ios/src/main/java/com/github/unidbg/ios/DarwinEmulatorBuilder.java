@@ -3,6 +3,7 @@ package com.github.unidbg.ios;
 import com.github.unidbg.EmulatorBuilder;
 import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.file.ios.DarwinFileIO;
+import com.github.unidbg.ios.ipa.IpaLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,11 @@ public class DarwinEmulatorBuilder extends EmulatorBuilder<ARMEmulator<DarwinFil
 
     protected DarwinEmulatorBuilder(boolean is64Bit) {
         super(is64Bit);
+
+        IpaLoader.addEnv(envList);
     }
 
-    private final List<String> envList = new ArrayList<>();
+    protected final List<String> envList = new ArrayList<>();
 
     public DarwinEmulatorBuilder addEnv(String env) {
         envList.add(env);

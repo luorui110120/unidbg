@@ -10,6 +10,7 @@ import com.github.unidbg.arm.ARMEmulator;
 import com.github.unidbg.arm.backend.Backend;
 import com.github.unidbg.file.NewFileIO;
 import com.github.unidbg.hook.HookListener;
+import com.github.unidbg.memory.MMapListener;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.MemoryMap;
 import com.github.unidbg.pointer.UnidbgPointer;
@@ -23,10 +24,10 @@ import unicorn.ArmConst;
 
 import java.io.DataOutput;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,13 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
     protected long sp;
     protected long mmapBaseAddress;
     protected final Map<Long, MemoryMap> memoryMap = new TreeMap<>();
+
+    protected MMapListener mMapListener;
+
+    @Override
+    public void setMMapListener(MMapListener listener) {
+        this.mMapListener = listener;
+    }
 
     protected void setMMapBaseAddress(long address) {
         this.mmapBaseAddress = address;
@@ -118,6 +126,9 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
     public final int munmap(long start, int length) {
         int aligned = (int) ARM.alignSize(length, emulator.getPageAlign());
         backend.mem_unmap(start, aligned);
+        if (mMapListener != null) {
+            mMapListener.onUnmap(start, aligned);
+        }
         MemoryMap removed = memoryMap.remove(start);
 
         if (removed == null) {
@@ -194,6 +205,9 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
         }
 
         backend.mem_protect(address, length, prot);
+        if (mMapListener != null) {
+            mMapListener.onProtect(address, length, prot);
+        }
         return 0;
     }
 
@@ -244,6 +258,8 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
 
     @Override
     public void setLibraryResolver(LibraryResolver libraryResolver) {
+        libraryResolver.onSetToLoader(emulator);
+
         this.libraryResolver = libraryResolver;
     }
 
@@ -320,7 +336,7 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
     }
 
     protected final void dump(Pointer pointer, long size, File outFile) throws IOException {
-        try (OutputStream outputStream = new FileOutputStream(outFile)) {
+        try (OutputStream outputStream = Files.newOutputStream(outFile.toPath())) {
             int dump = 0;
             while (dump < size) {
                 long read = size - dump;
@@ -342,6 +358,9 @@ public abstract class AbstractLoader<T extends NewFileIO> implements Memory, Loa
         }
 
         backend.mem_map(alignment.address, alignment.size, prot);
+        if (mMapListener != null) {
+            mMapListener.onMap(alignment.address, alignment.size, prot);
+        }
         if (memoryMap.put(alignment.address, new MemoryMap(alignment.address, (int) alignment.size, prot)) != null) {
             log.warn("mem_map replace exists memory map address=" + Long.toHexString(alignment.address));
         }

@@ -1,10 +1,12 @@
 package com.bytedance.frameworks.core.encrypt;
 
+import com.alibaba.fastjson.util.IOUtils;
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.Symbol;
 import com.github.unidbg.arm.HookStatus;
+import com.github.unidbg.arm.backend.Unicorn2Factory;
 import com.github.unidbg.arm.context.Arm32RegisterContext;
 import com.github.unidbg.arm.context.RegisterContext;
 import com.github.unidbg.debugger.DebuggerType;
@@ -31,7 +33,6 @@ import com.trace.GlobalData;
 import com.trace.KingTrace;
 
 import java.io.File;
-import java.io.IOException;
 
 public class TTEncrypt {
 
@@ -46,7 +47,10 @@ public class TTEncrypt {
     TTEncrypt(boolean logging) {
         this.logging = logging;
 
-        emulator = AndroidEmulatorBuilder.for32Bit().setProcessName("com.qidian.dldl.official").build(); // 创建模拟器实例，要模拟32位或者64位，在这里区分
+        emulator = AndroidEmulatorBuilder.for32Bit()
+                .setProcessName("com.qidian.dldl.official")
+                .addBackendFactory(new Unicorn2Factory(true))
+                .build(); // 创建模拟器实例，要模拟32位或者64位，在这里区分
         final Memory memory = emulator.getMemory(); // 模拟器的内存操作接口
         memory.setLibraryResolver(new AndroidResolver(23)); // 设置系统类库解析
 
@@ -55,27 +59,27 @@ public class TTEncrypt {
         DalvikModule dm = vm.loadLibrary(new File("unidbg-android/src/test/resources/example_binaries/libttEncrypt.so"), false); // 加载libttEncrypt.so到unicorn虚拟内存，加载成功以后会默认调用init_array等函数
         dm.callJNI_OnLoad(emulator); // 手动执行JNI_OnLoad函数
         module = dm.getModule(); // 加载好的libttEncrypt.so对应为一个模块
-
         TTEncryptUtils = vm.resolveClass("com/bytedance/frameworks/core/encrypt/TTEncryptUtils");
 
         //过滤掉下面模块的计算时间
-        GlobalData.ignoreModuleList.add("libc.so");
-        GlobalData.ignoreModuleList.add("libc++.so");
-        GlobalData.ignoreModuleList.add("libhookzz.so");
-        GlobalData.ignoreModuleList.add("libxhook.so");
-        ////监控内存 开始地址 和  结束地址;打印输出, 这个是内存地址
-        //GlobalData.watch_address.put(0x401db840, 0);
-        GlobalData.is_dump_ldr=true;
-        GlobalData.is_dump_str=true;
-        KingTrace trace=new KingTrace(emulator);
-        //// 设置监控的其实地址和结束地址, 这些都是内存地址 ea, 所以要加上基地址   module.base
-        trace.initialize(1,0,null);
-
-        emulator.getBackend().hook_add_new(trace,1,0,emulator);
+//        GlobalData.ignoreModuleList.add("libc.so");
+//        GlobalData.ignoreModuleList.add("libc++.so");
+//        GlobalData.ignoreModuleList.add("libhookzz.so");
+//        GlobalData.ignoreModuleList.add("libxhook.so");
+//        ////监控内存 开始地址 和  结束地址;打印输出, 这个是内存地址
+//        //GlobalData.watch_address.put(0x401db840, 0);
+//        GlobalData.is_dump_ldr=true;
+//        GlobalData.is_dump_str=true;
+//        KingTrace trace=new KingTrace(emulator);
+//        //// 设置监控的其实地址和结束地址, 这些都是内存地址 ea, 所以要加上基地址   module.base
+//        trace.initialize(1,0,null);
+//        emulator.getBackend().hook_add_new(trace,1,0,emulator);
+        ///系统自带的trace 功能;
+        //emulator.traceCode();
     }
 
-    void destroy() throws IOException {
-        emulator.close();
+    void destroy() {
+        IOUtils.close(emulator);
         if (logging) {
             System.out.println("destroy");
         }
@@ -174,7 +178,7 @@ public class TTEncrypt {
         }
 
         if (logging) {
-            emulator.attach(DebuggerType.ANDROID_SERVER_V7); // 附加IDA android_server_7.5，可输入c命令取消附加继续运行
+            emulator.attach(DebuggerType.ANDROID_SERVER_V8); // 附加IDA android_server，可输入c命令取消附加继续运行
         }
         byte[] data = new byte[16];
         ByteArray array = TTEncryptUtils.callStaticJniMethodObject(emulator, "ttEncrypt([BI)[B", new ByteArray(vm, data), data.length); // 执行Jni方法

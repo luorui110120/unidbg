@@ -213,6 +213,11 @@ public class DvmMethod extends Hashable {
         return checkJni(vm, dvmClass).newObjectV(vm, dvmClass, this, vaList);
     }
 
+    DvmObject<?> newObjectA(VaList vaList) {
+        BaseVM vm = dvmClass.vm;
+        return checkJni(vm, dvmClass).newObjectV(vm, dvmClass, this, vaList);
+    }
+
     DvmObject<?> newObject(VarArg varArg) {
         BaseVM vm = dvmClass.vm;
         return checkJni(vm, dvmClass).newObject(vm, dvmClass, this, varArg);
@@ -311,7 +316,7 @@ public class DvmMethod extends Hashable {
 
     public void setMember(Member member) {
         ((AccessibleObject) member).setAccessible(true);
-        if (Modifier.isStatic(member.getModifiers()) ^ isStatic) {
+        if (!Modifier.isStatic(member.getModifiers()) && isStatic) {
             throw new IllegalStateException(toString());
         }
         if (member.getDeclaringClass().getName().equals(dvmClass.getName())) {

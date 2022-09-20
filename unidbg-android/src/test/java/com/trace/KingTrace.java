@@ -1,13 +1,11 @@
 package com.trace;
 
 import capstone.Capstone;
+import capstone.api.Instruction;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.arm.ARM;
-import com.github.unidbg.arm.backend.Backend;
-import com.github.unidbg.arm.backend.BackendException;
-import com.github.unidbg.arm.backend.CodeHook;
-import com.github.unidbg.arm.backend.WriteHook;
+import com.github.unidbg.arm.backend.*;
 import com.github.unidbg.listener.TraceCodeListener;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.utils.Inspector;
@@ -20,6 +18,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+////自己实现的trace 可能是时间校验的问题, 导致很多so 都无法正常trace, 所以还是推荐使用系统的自带的 trace功能,这个类可以作为一些参考;
 public class KingTrace implements CodeHook {
 
     private final Emulator<?> emulator;
@@ -78,7 +78,7 @@ public class KingTrace implements CodeHook {
                 }
 //                Capstone.CsInsn[] insns = emulator.printAssemble(out, address, size);
 
-                Capstone.CsInsn[] insns = this.emulator.disassemble(address, size,0);
+                Instruction[] insns = this.emulator.disassemble(address, size,0);
                 if (insns == null || insns.length != 1) {
                     //throw new IllegalStateException("insns=" + Arrays.toString(insns));
                 }
@@ -158,8 +158,8 @@ public class KingTrace implements CodeHook {
         }
     }
 
-    private void printTrace(Backend backend, Capstone.CsInsn[] insns , long address) {
-        for (Capstone.CsInsn ins : insns) {
+    private void printTrace(Backend backend, Instruction[] insns , long address) {
+        for (Instruction ins : insns) {
             //查询上否有上一条缓存的指令，有的话，则查询上次的改动寄存器的数值。然后再打印
             if (GlobalData.has_pre && !GlobalData.pre_regname.equals("")){
                 Integer regindex = reg_names.get(GlobalData.pre_regname.toUpperCase());
@@ -219,7 +219,18 @@ public class KingTrace implements CodeHook {
 
 
             //拼接当前行的汇编指令
-            String opstr= ARM.assembleDetail(emulator, ins, address, false,false);
+            Memory memory = emulator.getMemory();
+            int tmpLengthLibraryName = 0;
+            if (memory != null) {
+                //System.out.println(memory.getMaxLengthLibraryName());
+                String lname = memory.getMaxLengthLibraryName();
+
+                if(null != lname){
+                    tmpLengthLibraryName = memory.getMaxLengthLibraryName().length();
+                }
+
+            }
+            String opstr= ARM.assembleDetail(emulator, ins, address, false,tmpLengthLibraryName);
             //从当前行指令中匹配出所有的寄存器
             String pattern = "";
             if(emulator.is64Bit()){
@@ -237,19 +248,19 @@ public class KingTrace implements CodeHook {
             while(m.find()){
                 regs.add(m.group(1));
             }
-            if (ins.opStr.contains("sp")){
+            if (ins.getOpStr().contains("sp")){
                 regs.add("sp");
                 if(GlobalData.pre_regname.equals("")){
                     GlobalData.pre_regname="sp";
                 }
             }
-            if (ins.opStr.contains("ip")){
+            if (ins.getOpStr().contains("ip")){
                 regs.add("ip");
                 if(GlobalData.pre_regname.equals("")){
                     GlobalData.pre_regname="sp";
                 }
             }
-            if (ins.opStr.contains("pc")){
+            if (ins.getOpStr().contains("pc")){
                 regs.add("pc");
                 if(GlobalData.pre_regname.equals("")){
                     GlobalData.pre_regname="sp";
@@ -282,13 +293,13 @@ public class KingTrace implements CodeHook {
 
             GlobalData.pre_codestr=opstr + GlobalData.print_split+ curRegs;
             GlobalData.has_pre=true;
-            address += ins.size;
+            address += ins.getSize();
         }
     }
 
     @Override
-    public void onAttach(Unicorn.UnHook unHook) {
-        
+    public void onAttach(UnHook unHook) {
+
     }
 
     @Override

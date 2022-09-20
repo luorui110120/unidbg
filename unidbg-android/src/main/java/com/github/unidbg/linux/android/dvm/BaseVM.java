@@ -1,14 +1,15 @@
 package com.github.unidbg.linux.android.dvm;
 
+import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Emulator;
 import com.github.unidbg.Module;
 import com.github.unidbg.linux.android.ElfLibraryFile;
 import com.github.unidbg.linux.android.ElfLibraryRawFile;
-import com.github.unidbg.linux.android.dvm.api.Signature;
 import com.github.unidbg.linux.android.dvm.apk.Apk;
 import com.github.unidbg.linux.android.dvm.apk.ApkFactory;
 import com.github.unidbg.linux.android.dvm.apk.AssetResolver;
 import com.github.unidbg.spi.LibraryFile;
+import net.dongliu.apk.parser.bean.CertificateMeta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -60,7 +61,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         this.jni = jni;
     }
 
-    private final Emulator<?> emulator;
+    private final AndroidEmulator emulator;
     private final Apk apk;
 
     final Set<String> notFoundClassSet = new HashSet<>();
@@ -70,7 +71,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         notFoundClassSet.add(className);
     }
 
-    BaseVM(Emulator<?> emulator, File apkFile) {
+    BaseVM(AndroidEmulator emulator, File apkFile) {
         this.emulator = emulator;
         this.apk = apkFile == null ? null : ApkFactory.createApk(apkFile);
     }
@@ -89,6 +90,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
     }
 
     final Map<Integer, ObjRef> globalObjectMap = new HashMap<>();
+    final Map<Integer, ObjRef> weakGlobalObjectMap = new HashMap<>();
     final Map<Integer, ObjRef> localObjectMap = new HashMap<>();
 
     private DvmClassFactory dvmClassFactory;
@@ -100,6 +102,7 @@ public abstract class BaseVM implements VM, DvmClassFactory {
 
     @Override
     public final DvmClass resolveClass(String className, DvmClass... interfaceClasses) {
+        className = className.replace('.', '/');
         int hash = Objects.hash(className);
         DvmClass dvmClass = classMap.get(hash);
         DvmClass superClass = null;
@@ -130,8 +133,16 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         if (log.isDebugEnabled()) {
             log.debug("addObject hash=0x" + Long.toHexString(hash) + ", global=" + global);
         }
+        Object value = object.getValue();
+        if (value instanceof DvmAwareObject) {
+            ((DvmAwareObject) value).initializeDvm(emulator, this, object);
+        }
         if (global) {
-            globalObjectMap.put(hash, new ObjRef(object, weak));
+            if (weak) {
+                weakGlobalObjectMap.put(hash, new ObjRef(object, true));
+            } else {
+                globalObjectMap.put(hash, new ObjRef(object, false));
+            }
         } else {
             localObjectMap.put(hash, new ObjRef(object, weak));
         }
@@ -162,8 +173,10 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         ObjRef ref;
         if (localObjectMap.containsKey(hash)) {
             ref = localObjectMap.get(hash);
-        } else {
+        } else if(globalObjectMap.containsKey(hash)) {
             ref = globalObjectMap.get(hash);
+        } else {
+            ref = weakGlobalObjectMap.get(hash);
         }
         return ref == null ? null : (T) ref.obj;
     }
@@ -242,8 +255,9 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         return new ApkLibraryFile(this, apk, soName, libData, apk.getPackageName(), emulator.is64Bit());
     }
 
-    Signature[] getSignatures() {
-        return apk == null ? null : apk.getSignatures(this);
+    @Override
+    public CertificateMeta[] getSignatures() {
+        return apk == null ? null : apk.getSignatures();
     }
 
     @Override
@@ -270,6 +284,9 @@ public abstract class BaseVM implements VM, DvmClassFactory {
 
     @Override
     public byte[] unzip(String path) {
+        if (path.length() > 1 && path.charAt(0) == '/') {
+            path = path.substring(1);
+        }
         return apk == null ? null : apk.getFileData(path);
     }
 
@@ -301,13 +318,13 @@ public abstract class BaseVM implements VM, DvmClassFactory {
         System.gc();
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage heap = memoryMXBean.getHeapMemoryUsage();
-        MemoryUsage nonheap = memoryMXBean.getNonHeapMemoryUsage();
+        MemoryUsage nonHeap = memoryMXBean.getNonHeapMemoryUsage();
         Map<Integer, ObjRef> map = new HashMap<>(globalObjectMap);
         for (Integer key : classMap.keySet()) {
             map.remove(key);
         }
-        System.err.println("globalObjectSize=" + globalObjectMap.size() + ", localObjectSize=" + localObjectMap.size() + ", classSize=" + classMap.size() + ", globalObjectSize=" + map.size());
-        System.err.println("heap: " + memoryUsage(heap) + ", nonheap: " + memoryUsage(nonheap));
+        System.err.println("globalObjectSize=" + globalObjectMap.size() + ", localObjectSize=" + localObjectMap.size() + ", weakGlobalObjectSize=" + weakGlobalObjectMap.size() + ", classSize=" + classMap.size() + ", globalObjectSize=" + map.size());
+        System.err.println("heap: " + memoryUsage(heap) + ", nonHeap: " + memoryUsage(nonHeap));
     }
 
     private String toMB(long memory) {

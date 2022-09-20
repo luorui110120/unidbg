@@ -4,11 +4,14 @@ import com.github.unidbg.Emulator;
 import com.github.unidbg.arm.backend.Backend;
 import com.github.unidbg.arm.context.EditableArm32RegisterContext;
 import com.github.unidbg.arm.context.RegisterContext;
+import com.github.unidbg.debugger.ida.AndroidServer;
 import com.github.unidbg.linux.ARM32SyscallHandler;
 import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.pointer.UnidbgPointer;
 import com.sun.jna.Pointer;
 import unicorn.ArmConst;
+
+import static com.github.unidbg.debugger.DebugServer.IDA_PROTOCOL_VERSION_V7;
 
 class MyARMSyscallHandler extends ARM32SyscallHandler {
 
@@ -40,7 +43,13 @@ class MyARMSyscallHandler extends ARM32SyscallHandler {
         int pid = emulator.getPid();
         int attachPid = pid - 1;
         if (("/proc/" + pid + "/exe").equals(path) || ("/proc/" + attachPid + "/exe").equals(path)) {
-            String newPath = "/system/bin/android_server_7.5\n";
+            String newPath = "";
+            if(AndroidServer.sVersion == IDA_PROTOCOL_VERSION_V7){
+                newPath = "/system/bin/android_server_7.5\0";
+            }
+            else{
+                newPath = "/system/bin/android_server_8.0\0";
+            }
             buf.setString(0, newPath);
             System.out.println("readlink: path=" + path + ", newPath=" + newPath);
             return newPath.length();

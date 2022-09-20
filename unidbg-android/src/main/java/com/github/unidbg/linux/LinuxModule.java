@@ -9,11 +9,13 @@ import com.github.unidbg.memory.MemRegion;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.pointer.UnidbgPointer;
 import com.github.unidbg.spi.InitFunction;
+import com.github.unidbg.spi.LibraryFile;
 import com.github.unidbg.utils.Inspector;
 import com.github.unidbg.virtualmodule.VirtualSymbol;
 import com.sun.jna.Pointer;
 import net.fornwall.jelf.ArmExIdx;
 import net.fornwall.jelf.ElfDynamicStructure;
+import net.fornwall.jelf.ElfException;
 import net.fornwall.jelf.ElfFile;
 import net.fornwall.jelf.ElfSection;
 import net.fornwall.jelf.ElfSymbol;
@@ -56,11 +58,10 @@ public class LinuxModule extends Module {
         if (log.isDebugEnabled()) {
             log.debug("createVirtualModule first=0x" + Long.toHexString(first.peer) + ", last=0x" + Long.toHexString(last.peer) + ", base=0x" + Long.toHexString(base) + ", size=0x" + Long.toHexString(size));
         }
-
         LinuxModule module = new LinuxModule(base, size, name, null,
                 Collections.<ModuleSymbol>emptyList(), Collections.<InitFunction>emptyList(),
                 Collections.<String, Module>emptyMap(), Collections.<MemRegion>emptyList(),
-                null, null, null, null, null) {
+                null, null, null, null, null, null) {
             @Override
             public Symbol findSymbolByName(String name, boolean withDependencies) {
                 UnidbgPointer pointer = symbols.get(name);
@@ -84,6 +85,62 @@ public class LinuxModule extends Module {
         }
         return module;
     }
+    static LinuxModule createIdaModule(String name, final Map<String, UnidbgPointer> symbols, Emulator<?> emulator){
+        if (symbols.isEmpty()) {
+            throw new IllegalArgumentException("symbols is empty");
+        }
+
+        List<UnidbgPointer> list = new ArrayList<>(symbols.values());
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+        Collections.sort(list, new Comparator<UnidbgPointer>() {
+            @Override
+            public int compare(UnidbgPointer o1, UnidbgPointer o2) {
+                return (int) (o1.peer - o2.peer);
+            }
+        });
+        UnidbgPointer first = list.get(0);
+        UnidbgPointer last = list.get(list.size() - 1);
+        Alignment alignment = ARM.align(first.peer, last.peer + last.getSize() - first.peer, emulator.getPageAlign());
+        final long base = alignment.address;
+        final long size = alignment.size;
+
+        if (log.isDebugEnabled()) {
+            log.debug("createVirtualModule first=0x" + Long.toHexString(first.peer) + ", last=0x" + Long.toHexString(last.peer) + ", base=0x" + Long.toHexString(base) + ", size=0x" + Long.toHexString(size));
+        }
+
+        ///my add
+        List<MemRegion> tmpMemRegionList = new ArrayList<MemRegion>();
+        for (Map.Entry<String, UnidbgPointer> entry : symbols.entrySet()) {
+            tmpMemRegionList.add(MemRegion.create(entry.getValue().peer, (int)entry.getValue().getSize(), entry.getValue().getPerms(), entry.getKey()));
+        }
+
+        LinuxModule module = new LinuxModule(base, size, name, null,
+                Collections.<ModuleSymbol>emptyList(), Collections.<InitFunction>emptyList(),
+                Collections.<String, Module>emptyMap(), tmpMemRegionList,
+                null, null, null, null, null, null) {
+            @Override
+            public Symbol findSymbolByName(String name, boolean withDependencies) {
+                UnidbgPointer pointer = symbols.get(name);
+                if (pointer != null) {
+                    return new VirtualSymbol(name, this, pointer.peer);
+                } else {
+                    return null;
+                }
+            }
+            @Override
+            public ElfSymbol getELFSymbolByName(String name) {
+                return null;
+            }
+            @Override
+            public boolean isVirtual() {
+                return true;
+            }
+        };
+//        for (Map.Entry<String, UnidbgPointer> entry : symbols.entrySet()) {
+//            module.registerSymbol(entry.getKey(), entry.getValue().peer);
+//        }
+        return module;
+    }
 
     private final SymbolLocator dynsym;
     private final List<ModuleSymbol> unresolvedSymbol;
@@ -97,8 +154,8 @@ public class LinuxModule extends Module {
     LinuxModule(long base, long size, String name, SymbolLocator dynsym,
                 List<ModuleSymbol> unresolvedSymbol, List<InitFunction> initFunctionList, Map<String, Module> neededLibraries, List<MemRegion> regions,
                 MemoizedObject<ArmExIdx> armExIdx, MemoizedObject<GnuEhFrameHeader> ehFrameHeader,
-                ElfSection symbolTableSection, ElfFile elfFile, ElfDynamicStructure dynamicStructure) {
-        super(name, base, size, neededLibraries, regions);
+                ElfSection symbolTableSection, ElfFile elfFile, ElfDynamicStructure dynamicStructure, LibraryFile libraryFile) {
+        super(name, base, size, neededLibraries, regions, libraryFile);
 
         this.dynsym = dynsym;
         this.unresolvedSymbol = unresolvedSymbol;
@@ -110,6 +167,17 @@ public class LinuxModule extends Module {
         this.dynamicStructure = dynamicStructure;
     }
 
+    @Override
+    public int virtualMemoryAddressToFileOffset(long offset) {
+        try {
+            return (int) elfFile.virtualMemoryAddrToFileOffset(offset);
+        } catch (ElfException e) {
+            return -1;
+        } catch (IOException e) {
+            throw new IllegalStateException("virtualMemoryAddressToFileOffset offset=0x" + Long.toHexString(offset));
+        }
+    }
+
     void callInitFunction(Emulator<?> emulator, boolean mustCallInit) throws IOException {
         if (!mustCallInit && !unresolvedSymbol.isEmpty()) {
             for (ModuleSymbol moduleSymbol : unresolvedSymbol) {
@@ -118,9 +186,18 @@ public class LinuxModule extends Module {
             return;
         }
 
+        int index = 0;
         while (!initFunctionList.isEmpty()) {
             InitFunction initFunction = initFunctionList.remove(0);
-            initFunction.call(emulator);
+            long initAddress = initFunction.getAddress();
+            if (initFunctionListener != null) {
+                initFunctionListener.onPreCallInitFunction(this, initAddress, index);
+            }
+            initAddress = initFunction.call(emulator);
+            if (initFunctionListener != null) {
+                initFunctionListener.onPostCallInitFunction(this, initAddress, index);
+            }
+            index++;
         }
     }
 
@@ -150,9 +227,9 @@ public class LinuxModule extends Module {
     }
 
     @Override
-    public Symbol findClosestSymbolByAddress(long addr, boolean fast) {
+    public Symbol findClosestSymbolByAddress(long address, boolean fast) {
         try {
-            long soaddr = addr - base;
+            long soaddr = address - base;
             if (soaddr <= 0) {
                 return null;
             }
@@ -160,11 +237,15 @@ public class LinuxModule extends Module {
             if (symbolTableSection != null && elfSymbol == null) {
                 elfSymbol = symbolTableSection.getELFSymbolByAddr(soaddr);
             }
+            Symbol symbol = null;
             if (elfSymbol != null) {
-                return new LinuxSymbol(this, elfSymbol);
-            } else {
-                return null;
+                symbol = new LinuxSymbol(this, elfSymbol);
             }
+            long entry = base + entryPoint;
+            if (address >= entry && (symbol == null || entry > symbol.getAddress())) {
+                symbol = new VirtualSymbol("start", this, entry);
+            }
+            return symbol;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -228,7 +309,7 @@ public class LinuxModule extends Module {
     }
 
     @Override
-    public Number[] callFunction(Emulator<?> emulator, long offset, Object... args) {
+    public Number callFunction(Emulator<?> emulator, long offset, Object... args) {
         return emulateFunction(emulator, base + offset, args);
     }
 

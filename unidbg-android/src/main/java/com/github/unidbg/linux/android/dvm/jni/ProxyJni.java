@@ -11,7 +11,9 @@ import com.github.unidbg.linux.android.dvm.VarArg;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -486,8 +488,12 @@ class ProxyJni extends JniFunction {
             List<Class<?>> classes = new ArrayList<>(10);
             ProxyUtils.parseMethodArgs(dvmMethod, classes, clazz.getClassLoader());
             Class<?>[] types = classes.toArray(new Class[0]);
-            Method method = ProxyUtils.matchMethodTypes(clazz, dvmMethod.getMethodName(), types, dvmMethod.isStatic());
-            return ProxyDvmObject.createObject(vm, new ProxyReflectedMethod(method));
+            Member method = ProxyUtils.matchMethodTypes(clazz, dvmMethod.getMethodName(), types, dvmMethod.isStatic());
+            if (method instanceof Method) {
+                return ProxyDvmObject.createObject(vm, new ProxyReflectedMethod((Method) method));
+            } else {
+                return ProxyDvmObject.createObject(vm, new ProxyReflectedConstructor((Constructor<?>) method));
+            }
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             log.warn("toReflectedMethod", e);
         }
@@ -746,6 +752,19 @@ class ProxyJni extends JniFunction {
     }
 
     @Override
+    public void setStaticBooleanField(BaseVM vm, DvmClass dvmClass, DvmField dvmField, boolean value) {
+        try {
+            Class<?> clazz = classLoader.loadClass(dvmClass.getName());
+            ProxyField field = ProxyUtils.findField(clazz, dvmField, visitor);
+            field.setBoolean(null, value);
+            return;
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            log.warn("setStaticBooleanField", e);
+        }
+        super.setStaticBooleanField(vm, dvmClass, dvmField, value);
+    }
+
+    @Override
     public void setStaticIntField(BaseVM vm, DvmClass dvmClass, DvmField dvmField, int value) {
         try {
             Class<?> clazz = classLoader.loadClass(dvmClass.getName());
@@ -769,7 +788,7 @@ class ProxyJni extends JniFunction {
             log.warn("setStaticObjectField", e);
         }
         super.setStaticObjectField(vm, dvmClass, dvmField, value);
-    };
+    }
 
     @Override
     public void setStaticLongField(BaseVM vm, DvmClass dvmClass, DvmField dvmField, long value) {

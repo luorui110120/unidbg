@@ -55,7 +55,7 @@ public class AndroidServer64Test implements IOResolver<AndroidFileIO> {
         if (("/proc/" + attachPid + "/task/" + attachPid + "/comm").equals(pathname)) {
             return FileResult.<AndroidFileIO>success(new ByteArrayFileIO(oflags, pathname, (executable.getName() + "\n").getBytes()));
         }
-        if (("/proc/" + attachPid + "/exe").equals(pathname) || "/system/bin/android_server64_7.5".equals(pathname)) {
+        if (("/proc/" + attachPid + "/exe").equals(pathname) || "/system/bin/android_server64_7.4".equals(pathname)) {
             return FileResult.<AndroidFileIO>success(new SimpleFileIO(oflags, executable, pathname));
         }
         if ("/proc".equals(pathname)) {
@@ -77,7 +77,7 @@ public class AndroidServer64Test implements IOResolver<AndroidFileIO> {
     private final File executable;
 
     private AndroidServer64Test() {
-        executable = new File("unidbg-android/src/test/resources/example_binaries/ida/android_server64_7.5");
+        executable = new File("unidbg-android/src/test/resources/example_binaries/ida/android_server64_7.4");
         emulator = new MyAndroidARM64Emulator(executable);
         emulator.getSyscallHandler().addIOResolver(this);
         Memory memory = emulator.getMemory();

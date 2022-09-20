@@ -8,6 +8,7 @@ import com.github.unidbg.arm.backend.BackendException;
 import com.github.unidbg.arm.context.Arm32RegisterContext;
 import com.github.unidbg.arm.context.Arm64RegisterContext;
 import com.github.unidbg.debugger.AbstractDebugServer;
+import com.github.unidbg.debugger.MmapInfo;
 import com.github.unidbg.debugger.ida.event.AttachExecutableEvent;
 import com.github.unidbg.debugger.ida.event.DetachEvent;
 import com.github.unidbg.debugger.ida.event.LoadExecutableEvent;
@@ -16,6 +17,7 @@ import com.github.unidbg.memory.MemRegion;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.utils.Inspector;
+import com.github.unidbg.utils.SetRegPC;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import unicorn.Arm64Const;
@@ -23,23 +25,23 @@ import unicorn.ArmConst;
 import unicorn.UnicornConst;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class AndroidServer extends AbstractDebugServer implements ModuleListener {
-
+    public static byte sVersion;
     private static final Log log = LogFactory.getLog(AndroidServer.class);
 
+    ///在 IDA 结束时, 是否需要创建快照 方便下次分析;
+    public static boolean bIsSaveSnop = false;
+
     private final byte protocolVersion;
+
 
     public AndroidServer(Emulator<?> emulator, byte protocolVersion) {
         super(emulator);
         this.protocolVersion = protocolVersion;
+        sVersion = protocolVersion;
         emulator.getMemory().addModuleListener(this);
     }
 
@@ -140,6 +142,8 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
                 requestTerminateProcess();
                 break;
             case 0xf: {
+                ///清除一下mem_maplist 列表,方便在ida中后续添加maps段
+                emulator.getBackend().mem_maplist().clear();
                 requestAttach(buffer);
                 break;
             }
@@ -164,6 +168,9 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
             case 0x19:
                 requestReadMemory(buffer);
                 break;
+            case 0x1a:
+                requestWriteMemory(buffer);
+                break;
             case 0x1b:
                 requestBreakPointAction(buffer);
                 break;
@@ -171,7 +178,7 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
                 requestReadRegisters(buffer);
                 break;
             case 0x20:
-                requestResetProgramCounter(buffer);
+                requestWriteRegisters(buffer);
                 break;
             case 0x22:
                 parseSignal(buffer);
@@ -183,14 +190,31 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
         }
     }
 
-    private void requestResetProgramCounter(ByteBuffer buffer) {
+    private void requestWriteRegisters(ByteBuffer buffer) {
         long tid = Utils.unpack_dd(buffer);
-        long b1 = Utils.unpack_dd(buffer);
-        long b2 = Utils.unpack_dd(buffer);
-        long pc = Utils.unpack_dq(buffer);
+        int reg_idx = (int)Utils.unpack_dd(buffer);
+        long reg_type = Utils.unpack_dd(buffer);
+        long reg_value = Utils.unpack_dq(buffer);
+        int emulatorRegId = 0;
         if (log.isDebugEnabled()) {
-            log.debug("requestResetProgramCounter tid=" + tid + ", b1=" + b1 + ", b2=" + b2 + ", pc=0x" + Long.toHexString(pc));
+            log.debug("requestResetProgramCounter tid=" + tid + ", reg_idx=" + reg_idx + ", reg_type=" + reg_type + ", reg_value=0x" + Long.toHexString(reg_value));
         }
+        /// reg_type  有三种类型. 1 是 RVT_INT , 2 是 RVT_FLOAT; 其他 RVT_UNAVAILABLE
+        if(1 == reg_type){
+            reg_value = reg_value - 1;
+        }
+        if(emulator.is64Bit()){
+            emulatorRegId = IdaRegsConst.arm64IdaToEmulator.get(reg_idx);
+        }
+        else{
+            emulatorRegId = IdaRegsConst.arm32IdaToEmulator.get(reg_idx);
+            if(emulatorRegId == ArmConst.UC_ARM_REG_PC){
+                reg_value = SetRegPC.setArmRegPcValue(emulator, reg_value);
+            }
+        }
+        emulator.getBackend().reg_write(emulatorRegId, reg_value);
+        //Integer emulatorRegId =  regMaps.get(reg_idx);
+
         notifyDebugEvent();
     }
 
@@ -201,7 +225,7 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
         sendAck();
     }
 
-    private int processExitStatus;
+    //private int processExitStatus;
 
     private void ackDebuggerEvent() {
         if (log.isDebugEnabled()) {
@@ -217,7 +241,20 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
         sendAck();
         shutdownServer();
         if (processExitStatus != 0) {
-            System.exit(processExitStatus);
+            if(!bIsSaveSnop){
+                System.exit(processExitStatus);
+            }
+            System.out.println("是否需要保存快照方便下次分析!!");
+//            String line = new Scanner(System.in).nextLine();
+//            if ("c".equals(line)) {
+//                System.out.println("save_shuju");
+//
+//            } else {
+//                System.out.println("c: continue");
+//            }
+            ////弹出提示 是否需要保存快照方便下次调试;
+            resumeRun();
+
         } else {
             resumeRun();
         }
@@ -308,8 +345,18 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
             list.addAll(module.getRegions());
         }
         SvcMemory svcMemory = emulator.getSvcMemory();
+
         list.add(MemRegion.create(svcMemory.getBase(), svcMemory.getSize(), UnicornConst.UC_PROT_READ | UnicornConst.UC_PROT_EXEC, "[svc]"));
         list.add(MemRegion.create(memory.getStackBase() - memory.getStackSize(), memory.getStackSize(), UnicornConst.UC_PROT_READ | UnicornConst.UC_PROT_WRITE, "[stack]"));
+
+        //// 添加新mmap出来的段, 为什么不使用 emulator.getMemory().setMMapListener 来监控内存段来添加呢?, 因为 setMMapListener 无法获取 malloc 函数的addr;
+        List<MmapInfo> mmaplist = emulator.getBackend().mem_maplist();
+        if(null != mmaplist) {
+            for (MmapInfo mmapvalue : mmaplist) {
+                list.add(MemRegion.create(mmapvalue.getAddr(), (int) mmapvalue.getSize(), mmapvalue.getPerms(), "newmmap"));
+            }
+        }
+
         Collections.sort(list);
 
         ByteBuffer newBuf = ByteBuffer.allocate(0x100 * list.size());
@@ -320,7 +367,11 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
             newBuf.put(Utils.pack_dq(region.begin + 1));
             long size = region.end - region.begin;
             newBuf.put(Utils.pack_dq(size + 1));
-            int mask = 1 << 4; // data
+            int mask = 1 << 4;; // 设置 段的bitness值,  0表示 16bit,  1表示32bit, 2表示64bit;
+            if(emulator.is64Bit()){
+                mask = 2 << 4;
+            }
+
             if ((region.perms & UnicornConst.UC_PROT_READ) != 0) {
                 mask |= (1 << 2);
             }
@@ -404,6 +455,27 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
             ByteBuffer newBuf = ByteBuffer.allocate(data.length + 0x10);
             newBuf.put(Utils.pack_dd(size));
             newBuf.put(data);
+            sendAck(Utils.flipBuffer(newBuf));
+        } catch (BackendException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("read memory failed: address=0x" + Long.toHexString(address), e);
+            }
+            sendAck();
+        }
+    }
+
+    private void requestWriteMemory(ByteBuffer buffer) {
+        long address = Utils.unpack_dq(buffer);
+        long size = Utils.unpack_dd(buffer);
+        if (log.isDebugEnabled()) {
+            log.debug("requestReadMemory address=0x" + Long.toHexString(address) + ", size=" + size);
+        }
+        try {
+            Backend backend = emulator.getBackend();
+            byte[] tmpbytes = Utils.unpack_bytes(buffer, (int)size);
+            backend.mem_write(address - 1, tmpbytes);
+            ByteBuffer newBuf = ByteBuffer.allocate(0x10);
+            newBuf.put(Utils.pack_dd(size));
             sendAck(Utils.flipBuffer(newBuf));
         } catch (BackendException e) {
             if (log.isDebugEnabled()) {
@@ -628,4 +700,10 @@ public class AndroidServer extends AbstractDebugServer implements ModuleListener
     public String toString() {
         return "IDA android";
     }
+
+    public static void setSnapShotStat(boolean inb){
+        bIsSaveSnop = inb;
+    }
+
+
 }

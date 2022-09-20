@@ -4,11 +4,13 @@ import com.github.unidbg.LibraryResolver;
 import com.github.unidbg.Module;
 import com.github.unidbg.ModuleListener;
 import com.github.unidbg.Symbol;
+import com.github.unidbg.debugger.MmapInfo;
 import com.github.unidbg.hook.HookListener;
 import com.github.unidbg.pointer.UnidbgPointer;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
@@ -42,23 +44,12 @@ public interface Loader {
 
     String getMaxLengthLibraryName();
     long getMaxSizeOfLibrary();
-
-    /**
-     * 运行线程
-     * @param timeout Duration to emulate the code (in microseconds).
-     */
-    void runThread(int threadId, long timeout);
-
-    /**
-     * 运行最后创建的线程
-     */
-    void runLastThread(long timeout);
-
-    boolean hasThread(int threadId);
+    List<MmapInfo> getMmapList();
 
     /**
      * 加载虚拟模块
      */
     Module loadVirtualModule(String name, final Map<String, UnidbgPointer> symbols);
+    Module loadIdaModule(String name, final Map<String, UnidbgPointer> symbols);
 
 }

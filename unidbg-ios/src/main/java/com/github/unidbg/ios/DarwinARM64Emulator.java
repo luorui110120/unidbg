@@ -9,6 +9,8 @@ import com.github.unidbg.file.ios.DarwinFileIO;
 import com.github.unidbg.file.ios.DarwinFileSystem;
 import com.github.unidbg.ios.classdump.ClassDumper;
 import com.github.unidbg.ios.classdump.IClassDumper;
+import com.github.unidbg.ios.gpb.GPBDescriptor;
+import com.github.unidbg.ios.objc.ObjC;
 import com.github.unidbg.memory.Memory;
 import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.pointer.UnidbgPointer;
@@ -21,7 +23,6 @@ import unicorn.UnicornConst;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Collections;
 
 public class DarwinARM64Emulator extends AbstractARM64Emulator<DarwinFileIO> {
 
@@ -91,7 +92,7 @@ public class DarwinARM64Emulator extends AbstractARM64Emulator<DarwinFileIO> {
 
     @Override
     public LibraryFile createURLibraryFile(URL url, String libName) {
-        return new URLibraryFile(url, "/vendor/lib/" + libName, null, Collections.<String>emptyList());
+        return new URLibraryFile(url, "/vendor/lib/" + libName, null);
     }
 
     @Override
@@ -115,5 +116,10 @@ public class DarwinARM64Emulator extends AbstractARM64Emulator<DarwinFileIO> {
     protected void searchClass(String keywords) {
         IClassDumper classDumper = ClassDumper.getInstance(this);
         classDumper.searchClass(keywords);
+    }
+
+    @Override
+    protected void dumpGPBProtobufMsg(String className) {
+        System.out.println(GPBDescriptor.toProtobufDef(this, ObjC.getInstance(this), className));
     }
 }

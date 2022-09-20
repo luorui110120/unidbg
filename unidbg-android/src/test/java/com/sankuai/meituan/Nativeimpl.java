@@ -1,6 +1,7 @@
 package com.sankuai.meituan;
 
 import com.github.unidbg.Emulator;
+import com.github.unidbg.debugger.DebuggerType;
 import com.github.unidbg.file.FileResult;
 import com.github.unidbg.file.IOResolver;
 import com.github.unidbg.file.linux.AndroidFileIO;
@@ -33,6 +34,7 @@ public class Nativeimpl extends  BaseNative{
         if(null != jni){
             vm.setJni(jni);
         }
+        //emulator.attach(DebuggerType.ANDROID_SERVER_V8);
         Object ret = nbridge.callStaticJniMethodObject(emulator, "main(I[Ljava/lang/Object;)[Ljava/lang/Object;", i, objArr);
         Object[] objret = (Object[])((DvmObject)ret).getValue();
         return objret;
@@ -189,7 +191,7 @@ public class Nativeimpl extends  BaseNative{
         vm.addLocalObject(input2_3);
         // 完整的参数2
         list.add(vm.addLocalObject(new ArrayObject(input2_1, input2_2, input2_3)));
-        Number number = module.callFunction(emulator, 0x5a38d, list.toArray())[0];
+        Number number = module.callFunction(emulator, 0x5a38d, list.toArray());
         return vm.getObject(number.intValue()).getValue().toString();
     };
 

@@ -8,13 +8,16 @@ import com.github.unidbg.Symbol;
 import com.github.unidbg.Utils;
 import com.github.unidbg.arm.ARM;
 import com.github.unidbg.hook.HookListener;
-import com.github.unidbg.ios.objc.CDObjectiveC2Processor;
-import com.github.unidbg.ios.objc.CDObjectiveCProcessor;
+import com.github.unidbg.ios.objc.ObjectiveCProcessor;
+import com.github.unidbg.ios.objc.processor.CDObjectiveC2Processor;
 import com.github.unidbg.ios.struct.DyldUnwindSections;
 import com.github.unidbg.memory.MemRegion;
 import com.github.unidbg.memory.Memory;
+import com.github.unidbg.memory.MemoryBlock;
+import com.github.unidbg.memory.SvcMemory;
 import com.github.unidbg.pointer.UnidbgPointer;
 import com.github.unidbg.spi.InitFunction;
+import com.github.unidbg.spi.LibraryFile;
 import com.github.unidbg.utils.Inspector;
 import com.github.unidbg.virtualmodule.VirtualSymbol;
 import com.sun.jna.Pointer;
@@ -25,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +46,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
 
     final Emulator<?> emulator;
     final MachO machO;
-    private final MachO.SymtabCommand symtabCommand;
+    final MachO.SymtabCommand symtabCommand;
     final MachO.DysymtabCommand dysymtabCommand;
     final ByteBuffer buffer;
     final List<NeedLibrary> lazyLoadNeededList;
@@ -50,6 +54,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     final Map<String, Module> exportModules;
     private final String path;
     final MachO.DyldInfoCommand dyldInfoCommand;
+    final MachO.LinkeditDataCommand chainedFixups;
 
     final List<InitFunction> routines;
     final List<InitFunction> initFunctionList;
@@ -60,55 +65,87 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     boolean lazyPointerProcessed;
 
     private final Map<String, Symbol> symbolMap = new HashMap<>();
+    final Map<String, MachOSymbol> otherSymbols = new HashMap<>();
 
     private final Log log;
 
     final boolean executable;
-    private final MachOLoader loader;
+    final MachOLoader loader;
     private final List<HookListener> hookListeners;
     final List<String> ordinalList;
 
     private final Section fEHFrameSection;
     private final Section fUnwindInfoSection;
-    private final Map<String, MachO.SegmentCommand64.Section64> objcSections;
+    public final Map<String, MachO.SegmentCommand64.Section64> objcSections;
 
     private final Map<String, ExportSymbol> exportSymbols;
 
-    public Symbol getExportByName(String exportName) {
-        return exportSymbols.get(exportName);
+    final Segment[] segments;
+
+    private static final long ARM64E_MASK = 0x7ffffffffffL;
+
+    private long offset2Virtual(long address) {
+        for (Segment ph : segments) {
+            if (address >= ph.fileOffset && address < (ph.fileOffset + ph.vmSize)) {
+                return address + ph.vmAddr - ph.fileOffset;
+            }
+        }
+        throw new UnsupportedOperationException("offset2Virtual address=0x" + Long.toHexString(address));
     }
 
-    private final Segment[] segments;
+    public final boolean validAddress(long address) {
+        address &= ARM64E_MASK;
+        for (Segment ph : segments) {
+            if (ph.fileSize == 0) {
+                continue;
+            }
+            if (address >= ph.vmAddr && address < (ph.vmAddr + ph.vmSize)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    @Override
     public final int virtualMemoryAddressToFileOffset(long address) {
         if (segments == null) {
             throw new UnsupportedOperationException();
         }
+        boolean isPACCodePointer = (address & (3L << 62)) != 0;
+        address &= ARM64E_MASK;
+
+        if (isPACCodePointer) {
+            long lower32Mask = -1L >>> 32;
+            address = offset2Virtual(lower32Mask & address);
+        }
+
         for (Segment ph : segments) {
-            if (address >= ph.virtual_address && address < (ph.virtual_address + ph.mem_size)) {
-                long relativeOffset = address - ph.virtual_address;
-                if (relativeOffset >= ph.file_size)
-                    throw new IllegalStateException("Can not convert virtual memory address " + Long.toHexString(address) + " to file offset -" + " found segment " + ph
+            if (address >= ph.vmAddr && address < (ph.vmAddr + ph.vmSize)) {
+                long relativeOffset = address - ph.vmAddr;
+                if (relativeOffset >= ph.fileSize)
+                    throw new IllegalStateException("Can not convert virtual memory address 0x" + Long.toHexString(address) + " to file offset -" + " found segment " + ph
                             + " but address maps to memory outside file range");
-                long ret = ph.offset + relativeOffset;
+                long ret = ph.fileOffset + relativeOffset;
                 if ((ret >> 33L) != 0) {
                     throw new IllegalStateException("ret=0x" + Long.toHexString(ret));
                 }
                 return (int) ret;
             }
         }
-        throw new IllegalStateException("Cannot find segment for address " + Long.toHexString(address));
+        throw new IllegalStateException("Cannot find segment for address: 0x" + Long.toHexString(address));
     }
+
+    private final List<InitFunction> allInitFunctionList;
 
     MachOModule(MachO machO, String name, long base, long size, Map<String, Module> neededLibraries, List<MemRegion> regions,
                 MachO.SymtabCommand symtabCommand, MachO.DysymtabCommand dysymtabCommand, ByteBuffer buffer,
                 List<NeedLibrary> lazyLoadNeededList, Map<String, Module> upwardLibraries, Map<String, Module> exportModules,
-                String path, Emulator<?> emulator, MachO.DyldInfoCommand dyldInfoCommand, UnidbgPointer envp, UnidbgPointer apple, UnidbgPointer vars,
+                String path, Emulator<?> emulator, MachO.DyldInfoCommand dyldInfoCommand, MachO.LinkeditDataCommand chainedFixups, UnidbgPointer envp, UnidbgPointer apple, UnidbgPointer vars,
                 long machHeader, boolean executable, MachOLoader loader, List<HookListener> hookListeners, List<String> ordinalList,
                 Section fEHFrameSection, Section fUnwindInfoSection,
                 Map<String, MachO.SegmentCommand64.Section64> objcSections,
-                Segment[] segments) {
-        super(name, base, size, neededLibraries, regions);
+                Segment[] segments, LibraryFile libraryFile) {
+        super(name, base, size, neededLibraries, regions, libraryFile);
         this.emulator = emulator;
         this.machO = machO;
         this.symtabCommand = symtabCommand;
@@ -119,6 +156,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         this.exportModules = exportModules;
         this.path = path;
         this.dyldInfoCommand = dyldInfoCommand;
+        this.chainedFixups = chainedFixups;
         this.envp = envp;
         this.apple = apple;
         this.vars = vars;
@@ -135,6 +173,10 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         this.log = LogFactory.getLog("com.github.unidbg.ios." + name);
         this.routines = machO == null ? Collections.<InitFunction>emptyList() : parseRoutines(machO);
         this.initFunctionList = machO == null ? Collections.<InitFunction>emptyList() : parseInitFunction(machO, buffer.duplicate(), name, emulator);
+        List<InitFunction> allInitFunctionList = new ArrayList<>(routines.size() + initFunctionList.size());
+        allInitFunctionList.addAll(routines);
+        allInitFunctionList.addAll(initFunctionList);
+        this.allInitFunctionList = Collections.unmodifiableList(allInitFunctionList);
 
         if (machO == null) {
             exportSymbols = Collections.emptyMap();
@@ -147,52 +189,68 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
             buffer.limit((int) (symtabCommand.strOff() + symtabCommand.strSize()));
             buffer.position((int) symtabCommand.strOff());
             ByteBuffer strBuffer = buffer.slice();
-            ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer);
-            for (MachO.SymtabCommand.Nlist nlist : symtabCommand.symbols()) {
-                int type = nlist.type() & N_TYPE;
-                if (nlist.un() == 0) {
-                    continue;
-                }
+            try (ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer)) {
+                for (MachO.SymtabCommand.Nlist nlist : symtabCommand.symbols()) {
+                    int type = nlist.type() & N_TYPE;
+                    if (nlist.un() == 0) {
+                        continue;
+                    }
 
-                boolean isWeakDef = (nlist.desc() & N_WEAK_DEF) != 0;
-                boolean isThumb = (nlist.desc() & N_ARM_THUMB_DEF) != 0;
-                strBuffer.position((int) nlist.un());
-                String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
-                if ((type == N_SECT || type == N_ABS) && (nlist.type() & N_STAB) == 0) {
-                    ExportSymbol exportSymbol = null;
-                    if (exportSymbols.isEmpty() || (exportSymbol = exportSymbols.remove(symbolName)) != null) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("nlist un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", type=0x" + Long.toHexString(nlist.type()) + ", isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", value=0x" + Long.toHexString(nlist.value()));
-                        }
-
-                        MachOSymbol symbol = new MachOSymbol(this, nlist, symbolName);
-                        if (exportSymbol != null && symbol.getAddress() == exportSymbol.getOtherWithBase()) {
+                    boolean isWeakDef = (nlist.desc() & N_WEAK_DEF) != 0;
+                    boolean isThumb = (nlist.desc() & N_ARM_THUMB_DEF) != 0;
+                    strBuffer.position((int) nlist.un());
+                    String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
+                    MachOSymbol symbol = new MachOSymbol(this, nlist, symbolName);
+                    if ((type == N_SECT || type == N_ABS) && (nlist.type() & N_STAB) == 0) {
+                        ExportSymbol exportSymbol = null;
+                        if (exportSymbols.isEmpty() || (exportSymbol = exportSymbols.remove(symbolName)) != null) {
                             if (log.isDebugEnabled()) {
-                                log.debug("nlist un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", value=0x" + Long.toHexString(nlist.value()) + ", address=0x" + Long.toHexString(exportSymbol.getValue()) + ", other=0x" + Long.toHexString(exportSymbol.getOtherWithBase()));
+                                log.debug("nlist un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", type=0x" + Long.toHexString(nlist.type()) + ", isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", value=0x" + Long.toHexString(nlist.value()));
                             }
-                            symbolMap.put(symbolName, exportSymbol);
+
+                            if (exportSymbol != null && symbol.getAddress() == exportSymbol.getOtherWithBase()) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("nlist un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", value=0x" + Long.toHexString(nlist.value()) + ", address=0x" + Long.toHexString(exportSymbol.getValue()) + ", other=0x" + Long.toHexString(exportSymbol.getOtherWithBase()));
+                                }
+                                if (symbolMap.put(symbolName, exportSymbol) != null) {
+                                    log.warn("Replace exist symbol: " + symbolName);
+                                }
+                            } else {
+                                if (symbolMap.put(symbolName, symbol) != null) {
+                                    log.warn("Replace exist symbol: " + symbolName);
+                                }
+                            }
                         } else {
-                            symbolMap.put(symbolName, symbol);
+                            if (log.isDebugEnabled()) {
+                                log.debug("nlist FILTER un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", type=0x" + Long.toHexString(nlist.type()) + ", isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", value=0x" + Long.toHexString(nlist.value()));
+                            }
+                        }
+                    } else if (type == N_INDR) {
+                        strBuffer.position(nlist.value().intValue());
+                        String indirectSymbol = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
+                        if (!symbolName.equals(indirectSymbol)) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("nlist indirect symbolName=" + symbolName + ", indirectSymbol=" + indirectSymbol);
+                            }
+                            if (symbolMap.put(symbolName, new IndirectSymbol(symbolName, this, indirectSymbol)) != null) {
+                                log.warn("Replace exist symbol: " + symbolName);
+                            }
                         }
                     } else {
                         if (log.isDebugEnabled()) {
-                            log.debug("nlist FILTER un=0x" + Long.toHexString(nlist.un()) + ", symbolName=" + symbolName + ", type=0x" + Long.toHexString(nlist.type()) + ", isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", value=0x" + Long.toHexString(nlist.value()));
+                            log.debug("nlist isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", type=" + type + ", symbolName=" + symbolName);
                         }
+                        otherSymbols.put(symbolName, symbol);
                     }
-                } else if (type == N_INDR) {
-                    strBuffer.position(nlist.value().intValue());
-                    String indirectSymbol = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
-                    if (!symbolName.equals(indirectSymbol)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("nlist indirect symbolName=" + symbolName + ", indirectSymbol=" + indirectSymbol);
-                        }
-                        symbolMap.put(symbolName, new IndirectSymbol(symbolName, this, indirectSymbol));
-                    }
-                } else if (log.isDebugEnabled()) {
-                    log.debug("nlist isWeakDef=" + isWeakDef + ", isThumb=" + isThumb + ", type=" + type + ", symbolName=" + symbolName);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
+    }
+
+    public boolean hasWeakDefines() {
+        return machO != null && (machO.header().flags() & com.github.unidbg.ios.MachO.MH_WEAK_DEFINES) != 0;
     }
 
     @Override
@@ -242,8 +300,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         }
 
         Pointer argvPointer = memory.allocateStack(0);
-        return emulateFunction(emulator, machHeader + entryPoint, argc, argvPointer, envPointer, auxvPointer)[0].intValue();
-//        return emulator.eFunc(machHeader + entryPoint, argc, argvPointer)[0].intValue();
+        return emulateFunction(emulator, machHeader + entryPoint, argc, argvPointer, envPointer, auxvPointer).intValue();
     }
 
     private boolean initialized;
@@ -390,8 +447,10 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
                     done = true;
                     break;
                 case BIND_OPCODE_SET_DYLIB_ORDINAL_IMM:
+                case BIND_OPCODE_SET_TYPE_IMM:
                     break;
                 case BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB:
+                case BIND_OPCODE_SET_ADDEND_SLEB:
                     Utils.readULEB128(buffer);
                     break;
                 case BIND_OPCODE_SET_DYLIB_SPECIAL_IMM:
@@ -403,11 +462,6 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
                         baos.write(b);
                     }
                     symbolName = baos.toString();
-                    break;
-                case BIND_OPCODE_SET_TYPE_IMM:
-                    break;
-                case BIND_OPCODE_SET_ADDEND_SLEB:
-                    Utils.readULEB128(buffer);
                     break;
                 case BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB:
                     segmentIndex = immediate;
@@ -502,47 +556,36 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
                 case SEGMENT:
                     MachO.SegmentCommand segmentCommand = (MachO.SegmentCommand) command.body();
                     for (MachO.SegmentCommand.Section section : segmentCommand.sections()) {
-                        long type = section.flags() & SECTION_TYPE;
-                        if (type != S_MOD_INIT_FUNC_POINTERS) {
-                            continue;
-                        }
-
-                        long elementCount = section.size() / emulator.getPointerSize();
-                        buffer.order(ByteOrder.LITTLE_ENDIAN);
-                        buffer.limit((int) (section.offset() + section.size()));
-                        buffer.position((int) section.offset());
-                        for (int i = 0; i < elementCount; i++) {
-                            long address = emulator.is32Bit() ? buffer.getInt() : buffer.getLong();
-                            if (log.isDebugEnabled()) {
-                                log.debug("parseInitFunction libName=" + libName + ", address=0x" + Long.toHexString(address) + ", offset=0x" + Long.toHexString(section.offset()) + ", elementCount=" + elementCount);
-                            }
-                            initFunctionList.add(new MachOModuleInit(this, envp, apple, vars, true, address));
-                        }
+                        parseInitFunction(buffer, libName, emulator, initFunctionList, section.flags(), section.size(), section.offset());
                     }
                     break;
                 case SEGMENT_64:
                     MachO.SegmentCommand64 segmentCommand64 = (MachO.SegmentCommand64) command.body();
                     for (MachO.SegmentCommand64.Section64 section : segmentCommand64.sections()) {
-                        long type = section.flags() & SECTION_TYPE;
-                        if (type != S_MOD_INIT_FUNC_POINTERS) {
-                            continue;
-                        }
-
-                        long elementCount = section.size() / emulator.getPointerSize();
-                        buffer.order(ByteOrder.LITTLE_ENDIAN);
-                        buffer.limit((int) (section.offset() + section.size()));
-                        buffer.position((int) section.offset());
-                        for (int i = 0; i < elementCount; i++) {
-                            long address = emulator.is32Bit() ? buffer.getInt() : buffer.getLong();
-                            if (log.isDebugEnabled()) {
-                                log.debug("parseInitFunction libName=" + libName + ", address=0x" + Long.toHexString(address) + ", offset=0x" + Long.toHexString(section.offset()) + ", elementCount=" + elementCount);
-                            }
-                            initFunctionList.add(new MachOModuleInit(this, envp, apple, vars, true, address));
-                        }
+                        parseInitFunction(buffer, libName, emulator, initFunctionList, section.flags(), section.size(), section.offset());
                     }
             }
         }
         return initFunctionList;
+    }
+
+    private void parseInitFunction(ByteBuffer buffer, String libName, Emulator<?> emulator, List<InitFunction> initFunctionList, long flags, long size, long offset) {
+        long type = flags & SECTION_TYPE;
+        if (type != S_MOD_INIT_FUNC_POINTERS) {
+            return;
+        }
+
+        long elementCount = size / emulator.getPointerSize();
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.limit((int) (offset + size));
+        buffer.position((int) offset);
+        for (int i = 0; i < elementCount; i++) {
+            long address = emulator.is32Bit() ? buffer.getInt() : buffer.getLong();
+            if (log.isDebugEnabled()) {
+                log.debug("parseInitFunction libName=" + libName + ", address=0x" + Long.toHexString(address) + ", offset=0x" + Long.toHexString(offset) + ", elementCount=" + elementCount);
+            }
+            initFunctionList.add(new MachOModuleInit(this, envp, apple, vars, true, address));
+        }
     }
 
     private final UnidbgPointer envp;
@@ -554,7 +597,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     }
 
     @Override
-    public Number[] callFunction(Emulator<?> emulator, long offset, Object... args) {
+    public Number callFunction(Emulator<?> emulator, long offset, Object... args) {
         return emulateFunction(emulator, base + offset, args);
     }
 
@@ -562,26 +605,20 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         buffer.limit((int) (symtabCommand.strOff() + symtabCommand.strSize()));
         buffer.position((int) symtabCommand.strOff());
         ByteBuffer strBuffer = buffer.slice();
-        ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer);
 
-        MachO.SymtabCommand.Nlist nlist = symtabCommand.symbols().get(index);
-        strBuffer.position((int) nlist.un());
-        String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
-        return new MachOSymbol(this, nlist, symbolName);
+        try (ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer)) {
+            MachO.SymtabCommand.Nlist nlist = symtabCommand.symbols().get(index);
+            strBuffer.position((int) nlist.un());
+            String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
+            return new MachOSymbol(this, nlist, symbolName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    private final Set<String> failedSymbols = new HashSet<>();
 
     @Override
     public Symbol findSymbolByName(String name, boolean withDependencies) {
-        if (withDependencies && failedSymbols.contains(name)) {
-            return null;
-        }
         Symbol symbol = findSymbolByNameInternal(name, withDependencies);
-        if (withDependencies && symbol == null) {
-            failedSymbols.add(name);
-        }
-
         if (symbol != null) {
             if (symbol instanceof IndirectSymbol) {
                 IndirectSymbol indirectSymbol = (IndirectSymbol) symbol;
@@ -598,6 +635,25 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
 
     private Symbol findSymbolByNameInternal(String name, boolean withDependencies) {
         Symbol symbol = symbolMap.get(name);
+        if (symbol == null) {
+            ExportSymbol es = exportSymbols.get(name);
+            if (es != null) {
+                if (es.isReExport()) {
+                    int ordinal = (int) es.getOther();
+                    if (ordinal <= ordinalList.size()) {
+                        String path = ordinalList.get(ordinal - 1);
+                        MachOModule reexportedFrom = loader.modules.get(FilenameUtils.getName(path));
+                        if (reexportedFrom != null) {
+                            symbol = reexportedFrom.findSymbolByName(name, false);
+                        }
+                    } else {
+                        throw new IllegalStateException("ordinal=" + ordinal);
+                    }
+                } else {
+                    symbol = es;
+                }
+            }
+        }
         if (symbol != null) {
             return symbol;
         }
@@ -607,7 +663,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
             findSet.addAll(exportModules.values());
             findSet.addAll(upwardLibraries.values());
             findSet.addAll(neededLibraries.values());
-            findSet.addAll(loader.getLoadedModules());
+//            findSet.addAll(loader.getLoadedModules());
             for (Module module : findSet) {
                 symbol = module.findSymbolByName(name, false);
                 if (symbol != null) {
@@ -626,7 +682,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         return null;
     }
 
-    private CDObjectiveCProcessor objectiveCProcessor;
+    private ObjectiveCProcessor objectiveCProcessor;
 
     @Override
     public Symbol findClosestSymbolByAddress(long addr, boolean fast) {
@@ -675,28 +731,39 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
             buffer.position((int) symtabCommand.strOff());
             ByteBuffer strBuffer = buffer.slice();
             strBuffer.position((int) bestSymbol.un());
-            ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer);
-            String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
-            // strip off leading underscore
-            if (symbolName.startsWith("_")) {
-                symbolName = symbolName.substring(1);
-            }
-            symbol = new MachOSymbol(this, bestSymbol, symbolName);
-            // never return the mach_header symbol
-            if ((symbol.getAddress() & ~1) == base) {
-                return null;
+
+            try (ByteBufferKaitaiStream io = new ByteBufferKaitaiStream(strBuffer)) {
+                String symbolName = new String(io.readBytesTerm(0, false, true, true), StandardCharsets.US_ASCII);
+                // strip off leading underscore
+                if (symbolName.startsWith("_")) {
+                    symbolName = symbolName.substring(1);
+                }
+                symbol = new MachOSymbol(this, bestSymbol, symbolName);
+                // never return the mach_header symbol
+                if ((symbol.getAddress() & ~1) == base) {
+                    return null;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
         try {
             if (!fast && objectiveCProcessor == null && objcSections != null && !objcSections.isEmpty()) {
-                objectiveCProcessor = new CDObjectiveC2Processor(buffer, objcSections, this, emulator);
+                objectiveCProcessor = new CDObjectiveC2Processor(this, emulator, buffer);
             }
             if (!fast && objectiveCProcessor != null) {
                 if (executable) {
                     long entry = machHeader + entryPoint;
                     if (addr >= entry && (symbol == null || entry > symbol.getAddress())) {
                         symbol = new ExportSymbol("main", entry, this, 0, com.github.unidbg.ios.MachO.EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE);
+                    }
+                }
+                for (int i = 0; i < allInitFunctionList.size(); i++) {
+                    InitFunction initFunction = allInitFunctionList.get(i);
+                    long address = initFunction.getAddress();
+                    if (addr >= address && (symbol == null || address > symbol.getAddress())) {
+                        symbol = new ExportSymbol("InitFunc_" + i, address, this, 0, com.github.unidbg.ios.MachO.EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE);
                     }
                 }
 
@@ -727,6 +794,9 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     final Set<UnidbgPointer> boundCallSet = new HashSet<>();
     final Set<UnidbgPointer> dependentsInitializedCallSet = new HashSet<>();
     final Set<UnidbgPointer> initializedCallSet = new HashSet<>();
+
+    boolean objcNotifyMapped;
+    boolean objcNotifyInit;
 
     @Override
     public String getPath() {
@@ -767,8 +837,8 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
                 Collections.<NeedLibrary>emptyList(),
                 Collections.<String, Module>emptyMap(),
                 Collections.<String, Module>emptyMap(),
-                name, emulator, null, null, null, null, 0L, false, null,
-                Collections.<HookListener>emptyList(), Collections.<String>emptyList(), null, null, null, null) {
+                name, emulator, null, null, null, null, null, 0L, false, null,
+                Collections.<HookListener>emptyList(), Collections.<String>emptyList(), null, null, null, null, null) {
             @Override
             public Symbol findSymbolByName(String name, boolean withDependencies) {
                 UnidbgPointer pointer = symbols.get(name);
@@ -860,11 +930,25 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     }
 
     private long bindAt(Emulator<?> emulator, int libraryOrdinal, int type, long address, String symbolName) {
+        libraryOrdinal = (byte) libraryOrdinal;
+        Pointer pointer = UnidbgPointer.pointer(emulator, address);
+        if (pointer == null) {
+            throw new IllegalStateException();
+        }
+
         final MachOModule targetImage;
         if (libraryOrdinal == BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE) {
             targetImage = (MachOModule) loader.getExecutableModule();
         } else if (libraryOrdinal == BIND_SPECIAL_DYLIB_SELF) {
             targetImage = this;
+        } else if (libraryOrdinal == BIND_SPECIAL_DYLIB_FLAT_LOOKUP) {
+            for(MachOModule mm : loader.modules.values().toArray(new MachOModule[0])) {
+                long at = bindAt(type, pointer, mm, symbolName);
+                if (at != 0) {
+                    return at;
+                }
+            }
+            return 0;
         } else if (libraryOrdinal <= 0) {
             throw new IllegalStateException(String.format("bad mach-o binary, unknown special library ordinal (%d) too big for symbol %s in %s", libraryOrdinal, symbolName, getPath()));
         } else if (libraryOrdinal <= ordinalList.size()) {
@@ -877,15 +961,15 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
             throw new IllegalStateException(String.format("bad mach-o binary, library ordinal (%d) too big (max %d) for symbol %s in %s", libraryOrdinal, ordinalList.size(), symbolName, getPath()));
         }
 
-        Pointer pointer = UnidbgPointer.pointer(emulator, address);
-        if (pointer == null) {
-            throw new IllegalStateException();
+        if ("_dispatch_queue_create_with_target$V2".equals(symbolName)) {
+            symbolName = "_dispatch_queue_create";
         }
 
-        Symbol symbol = targetImage.findSymbolByName(symbolName, true);
-        if (symbol == null) {
-            symbol = targetImage.getExportByName(symbolName);
-        }
+        return bindAt(type, pointer, targetImage, symbolName);
+    }
+
+    private long bindAt(int type, Pointer pointer, MachOModule targetImage, String symbolName) {
+        Symbol symbol = loader.findSymbolInternal(targetImage, symbolName);
         if (symbol == null) {
             long bindAt = 0;
             for (HookListener listener : hookListeners) {
@@ -908,7 +992,6 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
                 }
                 return bindAt;
             }
-            log.info("bindAt type=" + type + ", symbolName=" + symbolName + ", address=0x" + Long.toHexString(address - this.base) + ", upwardLibraries=" + this.upwardLibraries.values() + ", libraryOrdinal=" + libraryOrdinal + ", module=" + this.name + ", targetImage=" + targetImage);
             return 0;
         }
 
@@ -922,7 +1005,7 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
         }
 
         if (log.isTraceEnabled()) {
-            log.trace("bindAt 0x=" + Long.toHexString(symbol.getValue()) + ", type=" + type + ", symbolName=" + symbol.getModuleName() + ", address=0x" + Long.toHexString(address - this.base) + ", symbol=" + symbol + ", pointer=" + pointer + ", bindAt=0x" + Long.toHexString(bindAt) + ", libraryOrdinal=" + libraryOrdinal);
+            log.trace("bindAt 0x=" + Long.toHexString(symbol.getValue()) + ", type=" + type + ", symbolName=" + symbol.getModuleName() + ", symbol=" + symbol + ", pointer=" + pointer + ", bindAt=0x" + Long.toHexString(bindAt));
         }
 
         switch (type) {
@@ -960,5 +1043,30 @@ public class MachOModule extends Module implements com.github.unidbg.ios.MachO {
     @Override
     public long getBaseHeader() {
         return machHeader;
+    }
+
+    final void callObjcNotifyMapped(UnidbgPointer _objcNotifyMapped) {
+        if (_objcNotifyMapped != null && !objcNotifyMapped) {
+            SvcMemory svcMemory = emulator.getSvcMemory();
+            MemoryBlock block = emulator.getMemory().malloc(emulator.getPointerSize() * 2, true);
+            try {
+                Pointer paths = block.getPointer();
+                Pointer mh = paths.share(emulator.getPointerSize());
+                paths.setPointer(0, createPathMemory(svcMemory));
+                mh.setPointer(0, UnidbgPointer.pointer(emulator, machHeader));
+                Module.emulateFunction(emulator, _objcNotifyMapped.peer, 1, paths, mh);
+                objcNotifyMapped = true;
+            } finally {
+                block.free();
+            }
+        }
+    }
+
+    final void callObjcNotifyInit(UnidbgPointer _objcNotifyInit) {
+        if (_objcNotifyInit != null && !objcNotifyInit && objcNotifyMapped) {
+            SvcMemory svcMemory = emulator.getSvcMemory();
+            Module.emulateFunction(emulator, _objcNotifyInit.peer, createPathMemory(svcMemory), machHeader);
+            objcNotifyInit = true;
+        }
     }
 }

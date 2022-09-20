@@ -10,20 +10,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 public class URLibraryFile implements LibraryFile {
 
     private final URL url;
     private final String path;
-    private final String version;
-    private final List<String> excludeLibs;
+    private final DarwinResolver resolver;
 
-    public URLibraryFile(URL url, String path, String version, List<String> excludeLibs) {
+    public URLibraryFile(URL url, String path, DarwinResolver resolver) {
         this.url = url;
         this.path = path;
-        this.version = version;
-        this.excludeLibs = excludeLibs;
+        this.resolver = resolver;
     }
 
     @Override
@@ -38,10 +35,10 @@ public class URLibraryFile implements LibraryFile {
 
     @Override
     public LibraryFile resolveLibrary(Emulator<?> emulator, String dylibName) {
-        if (version == null) {
+        if (resolver == null) {
             return null;
         }
-        return DarwinResolver.resolveLibrary(dylibName, version, excludeLibs);
+        return resolver.resolveLibrary(dylibName, resolver.getClass());
     }
 
     @Override
@@ -50,6 +47,19 @@ public class URLibraryFile implements LibraryFile {
             return Utils.mapBuffer(new File(url.getPath()));
         } else {
             return ByteBuffer.wrap(IOUtils.toByteArray(url));
+        }
+    }
+
+    @Override
+    public long getFileSize() {
+        if ("file".equalsIgnoreCase(url.getProtocol())) {
+            return new File(url.getPath()).length();
+        } else {
+            try {
+                return IOUtils.toByteArray(url).length;
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 

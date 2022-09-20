@@ -2,6 +2,7 @@ package com.anjuke.mobile.sign;
 
 import com.github.unidbg.AndroidEmulator;
 import com.github.unidbg.Module;
+import com.github.unidbg.debugger.DebuggerType;
 import com.github.unidbg.linux.android.AndroidEmulatorBuilder;
 import com.github.unidbg.linux.android.AndroidResolver;
 import com.github.unidbg.linux.android.dvm.DalvikModule;
@@ -60,6 +61,7 @@ public class SignUtil {
     }
 
     public String getSign0(String p1, String p2, Map<String, byte[]> map, String p3, int i) {
+
         String methodSign = "getSign0(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;I)Ljava/lang/String;";
         StringObject obj = cSignUtil.callStaticJniMethodObject(emulator, methodSign, p1, p2, ProxyDvmObject.createObject(vm, map), p3, i);
         return obj.getValue();
@@ -70,6 +72,7 @@ public class SignUtil {
         for (String key : paramMap.keySet()) {
             map.put(key, paramMap.get(key).getBytes(StandardCharsets.UTF_8));
         }
+        emulator.attach(DebuggerType.ANDROID_SERVER_V8);
         return getSign0(p1, p2, map, p3, i);
     }
 
